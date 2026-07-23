@@ -1,26 +1,243 @@
 @import "tailwindcss";
 
+/* ===== 国风色彩体系 ===== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg-primary: #faf6f0;
+  --bg-card: #ffffff;
+  --bg-muted: #f0ebe0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --accent: #c41e3a;
+  --accent-light: #d4455a;
+  --gold: #c9a96e;
+  --gold-dark: #b8860b;
+  --celadon: #2c5f7c;
+  --celadon-light: #3a7ca5;
+  --divider: #d4c5b2;
+  --hero-overlay: rgba(26, 26, 26, 0.85);
+
+  /* Hero / 深色区专用（随主题切换） */
+  --hero-bg: #f0e8d8;
+  --hero-bg-deep: #e5dac5;
+  --hero-text: #1a1a1a;
+  --hero-text-muted: #666666;
+
+  /* 半透明覆盖层（随主题切换底色） */
+  --overlay-bg: rgba(26, 26, 26, 0.08);
+  --overlay-border: rgba(26, 26, 26, 0.12);
+  --overlay-text: rgba(26, 26, 26, 0.60);
+
+  /* 强调文字（在 accent 背景上） */
+  --text-on-accent: #ffffff;
+
+  --font-serif: "Noto Serif SC", "Source Han Serif SC", "SimSun", "STSong",
+    serif;
+  --font-display: "ZCOOL XiaoWei", "Noto Serif SC", serif;
+  --font-sans: "Noto Sans SC", "Source Han Sans SC", "PingFang SC",
+    "Microsoft YaHei", sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+
+  --scrollbar-thumb: #c4b89e;
+  --scrollbar-track: transparent;
+}
+
+.dark {
+  --bg-primary: #121212;
+  --bg-card: #1e1e1e;
+  --bg-muted: #2a2a2a;
+  --text-primary: #e8e0d5;
+  --text-secondary: #a0a0a0;
+  --text-muted: #707070;
+  --accent: #d4455a;
+  --accent-light: #e8607a;
+  --gold: #d4af6a;
+  --gold-dark: #e0c080;
+  --celadon: #4a90b8;
+  --celadon-light: #6ab0d0;
+  --divider: #3a3a3a;
+  --hero-overlay: rgba(18, 18, 18, 0.85);
+
+  /* Hero 区专用 */
+  --hero-bg: #0a0a0a;
+  --hero-bg-deep: #050505;
+  --hero-text: #e8e0d5;
+  --hero-text-muted: #a0a0a0;
+
+  /* 半透明覆盖层（深色模式下保持白色基调） */
+  --overlay-bg: rgba(255, 255, 255, 0.10);
+  --overlay-border: rgba(255, 255, 255, 0.15);
+  --overlay-text: rgba(232, 224, 213, 0.70);
+
+  /* 强调文字 */
+  --text-on-accent: #ffffff;
+
+  --scrollbar-thumb: #4a4a4a;
+  --scrollbar-track: #1e1e1e;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --color-ink-deep: #1a1a1a;
+  --color-ink-medium: #4a4a4a;
+  --color-ink-light: #666666;
+  --color-rice-paper: #f5f0e8;
+  --color-rice-light: #faf6f0;
+  --color-vermilion: #c41e3a;
+  --color-vermilion-dark: #b22222;
+  --color-vermilion-light: #d4455a;
+  --color-gold: #c9a96e;
+  --color-gold-dark: #b8860b;
+  --color-celadon: #2c5f7c;
+  --color-celadon-light: #3a7ca5;
+  --color-bg-card: var(--bg-card);
+  --color-bg-muted: var(--bg-muted);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-light: var(--accent-light);
+  --color-divider: var(--divider);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ===== 全局基础样式 ===== */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== 自定义滚动条 ===== */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* ===== 文字选中颜色 ===== */
+::selection {
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.dark ::selection {
+  background: var(--accent-light);
+  color: var(--text-on-accent);
+}
+
+/* ===== 动画降级 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .canvas-particles {
+    display: none !important;
+  }
+}
+
+/* ===== 墨水晕染效果 (hover 使用) ===== */
+.ink-ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ink-ripple::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    var(--accent) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.ink-ripple:hover::after {
+  opacity: 0.08;
+}
+
+/* ===== 毛笔笔触下划线 ===== */
+.brush-underline {
+  position: relative;
+}
+
+.brush-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--gold);
+  transition: width 0.3s ease;
+}
+
+.brush-underline:hover::after,
+.brush-underline.active::after {
+  width: 100%;
+}
+
+/* ===== 淡入上浮动画 (Section 公用) ===== */
+.animate-fade-up {
+  animation: fadeUp 0.6s ease forwards;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== 脉动动画 ===== */
+.animate-pulse-soft {
+  animation: pulseSoft 2s ease-in-out infinite;
+}
+
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: translateY(0);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(-8px);
+  }
 }
