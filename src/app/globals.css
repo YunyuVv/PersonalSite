@@ -332,6 +332,42 @@ body {
   gap: 0.6rem;
 }
 
+/* 首屏 · 单一品牌色柔光晕（Motion-Driven 风格，静态、零动画、随主题反色） */
+.hm-hero-glow {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.hm-hero-glow::before,
+.hm-hero-glow::after {
+  content: "";
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, var(--accent) 0%, transparent 70%);
+}
+.hm-hero-glow::before {
+  width: min(48vw, 560px);
+  height: min(48vw, 560px);
+  top: -180px;
+  right: -80px;
+  opacity: 0.14;
+}
+.hm-hero-glow::after {
+  width: min(40vw, 460px);
+  height: min(40vw, 460px);
+  bottom: -200px;
+  left: -140px;
+  opacity: 0.09;
+}
+.dark .hm-hero-glow::before {
+  opacity: 0.20;
+}
+.dark .hm-hero-glow::after {
+  opacity: 0.13;
+}
+
 /* 极淡顶部光晕（替代浮动光斑，更干净） */
 body::before {
   content: "";

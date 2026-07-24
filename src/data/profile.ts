@@ -10,11 +10,12 @@ const profile: Profile = {
   avatar: "/images/avatar.jpg",
   bio: "我是一名在 Web 开发领域深耕五年的全栈工程师，专注于 React 生态与 Node.js 后端。\n\n我相信好的代码和好的设计一样，应该让人感到舒适。曾在创业公司从零搭建过日活百万级产品的技术架构，也热爱在开源社区贡献和分享。\n\n技术之外，是个国风爱好者，喜欢书法和水墨画——这也是这个页面的灵感来源。",
   social: {
-    github: "https://github.com/yourname",
+    github: "https://github.com/YunyuVv",
     linkedin: "https://linkedin.com/in/yourname",
     juejin: "https://juejin.cn/user/yourname",
     zhihu: "https://zhihu.com/people/yourname",
     wechat: "https://mp.weixin.qq.com/",
+    website: "https://yunyu.ideaflow.top/",
   },
   experiences: [
     {

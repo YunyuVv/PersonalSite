@@ -5,6 +5,7 @@ export interface SocialLinks {
   zhihu?: string;
   twitter?: string;
   wechat?: string;
+  website?: string;
 }
 
 export interface Experience {
