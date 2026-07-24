@@ -41,7 +41,7 @@ export function SectionWrapper({
           : "bg-[var(--bg-primary)] text-[var(--text-primary)]"
       } ${className}`}
     >
-      <div className="mx-auto max-w-6xl">{children}</div>
+      <div className="mx-auto max-w-5xl">{children}</div>
     </motion.section>
   );
 }

@@ -122,9 +122,9 @@ export function SkillRadar({ skills, className = "" }: SkillRadarProps) {
         {/* 数据区域 */}
         <motion.path
           d={polygonPath}
-          fill="var(--accent)"
-          fillOpacity="0.15"
-          stroke="var(--accent)"
+          fill="var(--lapis)"
+          fillOpacity="0.12"
+          stroke="var(--lapis)"
           strokeWidth="1.5"
           initial={reduced ? undefined : { pathLength: 0, opacity: 0 }}
           whileInView={
@@ -141,7 +141,7 @@ export function SkillRadar({ skills, className = "" }: SkillRadarProps) {
               cx={point.x}
               cy={point.y}
               r="4"
-              fill="var(--accent)"
+              fill="var(--lapis)"
               stroke="white"
               strokeWidth="2"
               className="cursor-pointer"
@@ -153,7 +153,7 @@ export function SkillRadar({ skills, className = "" }: SkillRadarProps) {
                 x={point.x}
                 y={point.y - 12}
                 textAnchor="middle"
-                fill="var(--accent)"
+                fill="var(--lapis)"
                 fontSize="12"
                 fontWeight="bold"
               >

@@ -1,20 +1,39 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { Menu, X, Moon, Sun, ArrowUpRight, Home } from "lucide-react";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
 import { useTheme } from "@/hooks/use-theme";
 
-const NAV_ITEMS = [
-  { id: "about", label: "关于" },
-  { id: "skills", label: "技能" },
-  { id: "projects", label: "项目" },
-  { id: "contact", label: "联系" },
-] as const;
+const HOME_SECTIONS = ["about", "featured", "skills", "links", "contact"];
+const RESUME_SECTIONS = ["about", "skills", "projects", "contact"];
+
+const NAV_BY_PAGE = {
+  home: [
+    { id: "about", label: "关于" },
+    { id: "featured", label: "作品" },
+    { id: "skills", label: "技能" },
+    { id: "contact", label: "联系" },
+  ],
+  resume: [
+    { id: "about", label: "关于" },
+    { id: "skills", label: "技能" },
+    { id: "projects", label: "项目" },
+    { id: "contact", label: "联系" },
+  ],
+} as const;
 
 export function Nav() {
-  const activeSection = useScrollSpy();
+  const pathname = usePathname();
+  const isResume = pathname === "/resume";
+  const page = isResume ? "resume" : "home";
+  const sectionIds = isResume ? RESUME_SECTIONS : HOME_SECTIONS;
+  const navItems = NAV_BY_PAGE[page];
+
+  const activeSection = useScrollSpy(sectionIds);
   const { theme, toggle } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -35,10 +54,20 @@ export function Nav() {
         className="fixed top-0 left-0 right-0 z-50 px-4 md:px-8"
       >
         <div className="mx-auto max-w-6xl">
-          <div className="flex items-center justify-end h-16">
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center gap-1 bg-[var(--bg-card)]/80 backdrop-blur-xl rounded-full px-2 py-1.5 border border-[var(--divider)] shadow-sm">
-              {NAV_ITEMS.map((item) => (
+        <div className="flex items-center justify-between h-16">
+          {/* Left: Home icon (品牌 / 返回首页) */}
+          <Link
+            href="/"
+            aria-label="返回首页"
+            className="hidden md:inline-flex items-center justify-center h-9 w-9 glass rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)] transition-colors cursor-pointer"
+          >
+            <Home size={17} />
+          </Link>
+
+          {/* Right: desktop nav + mobile buttons */}
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-1 glass rounded-full px-2 py-1.5">
+              {navItems.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
@@ -58,6 +87,23 @@ export function Nav() {
                   <span className="relative z-10">{item.label}</span>
                 </button>
               ))}
+
+              {/* 跨页互跳：非简历页时显示“简历”入口 */}
+              {!isResume && (
+                <Link
+                  href="/resume"
+                  className="px-4 py-2 text-sm font-medium rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-300 cursor-pointer"
+                >
+                  简历
+                </Link>
+              )}
+
+              <a
+                href="/creative"
+                className="px-4 py-2 text-sm font-medium rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-300 cursor-pointer flex items-center gap-1"
+              >
+                互动版 <ArrowUpRight size={14} />
+              </a>
               <div className="w-px h-5 bg-[var(--divider)] mx-1" />
               <button
                 onClick={toggle}
@@ -70,22 +116,30 @@ export function Nav() {
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center gap-2">
+              <Link
+                href="/"
+                aria-label="返回首页"
+                className="p-2 rounded-full glass backdrop-blur-xl text-[var(--text-secondary)] cursor-pointer"
+              >
+                <Home size={18} />
+              </Link>
               <button
                 onClick={toggle}
-                className="p-2 rounded-full bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--divider)] text-[var(--text-secondary)] cursor-pointer"
+                className="p-2 rounded-full glass backdrop-blur-xl text-[var(--text-secondary)] cursor-pointer"
                 aria-label={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"}
               >
                 {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
               </button>
               <button
                 onClick={() => setMobileOpen(true)}
-                className="p-2 rounded-full bg-[var(--bg-card)]/80 backdrop-blur-xl border border-[var(--divider)] text-[var(--text-primary)] cursor-pointer"
+                className="p-2 rounded-full glass backdrop-blur-xl text-[var(--text-primary)] cursor-pointer"
                 aria-label="打开菜单"
               >
                 <Menu size={20} />
               </button>
             </div>
           </div>
+        </div>
         </div>
       </motion.nav>
 
@@ -117,7 +171,14 @@ export function Nav() {
                   <X size={20} />
                 </button>
               </div>
-              {NAV_ITEMS.map((item, i) => (
+              <Link
+                href={isResume ? "/" : "/resume"}
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-base font-medium mb-1 bg-[var(--accent)] text-[var(--text-on-accent)]"
+              >
+                {isResume ? "返回首页 ↗" : "查看简历 ↗"}
+              </Link>
+              {navItems.map((item, i) => (
                 <motion.button
                   key={item.id}
                   initial={{ opacity: 0, x: 20 }}
@@ -133,6 +194,13 @@ export function Nav() {
                   {item.label}
                 </motion.button>
               ))}
+              <a
+                href="/creative"
+                onClick={() => setMobileOpen(false)}
+                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-base font-medium mt-2 text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]"
+              >
+                互动版 ↗
+              </a>
             </motion.div>
           </motion.div>
         )}

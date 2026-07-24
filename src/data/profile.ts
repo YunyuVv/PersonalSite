@@ -14,6 +14,7 @@ const profile: Profile = {
     linkedin: "https://linkedin.com/in/yourname",
     juejin: "https://juejin.cn/user/yourname",
     zhihu: "https://zhihu.com/people/yourname",
+    wechat: "https://mp.weixin.qq.com/",
   },
   experiences: [
     {
