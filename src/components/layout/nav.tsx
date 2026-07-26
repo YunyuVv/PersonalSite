@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Moon, Sun, ArrowUpRight, Home } from "lucide-react";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
-import { useTheme } from "@/hooks/use-theme";
+import { useTheme } from "next-themes";
 
 const HOME_SECTIONS = ["about", "featured", "skills", "links", "contact"];
 const RESUME_SECTIONS = ["about", "skills", "projects", "contact"];
@@ -34,8 +34,12 @@ export function Nav() {
   const navItems = NAV_BY_PAGE[page];
 
   const activeSection = useScrollSpy(sectionIds);
-  const { theme, toggle } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = resolvedTheme === "dark";
+  const toggleTheme = () => setTheme(isDark ? "light" : "dark");
 
   const handleNavClick = (id: string) => {
     setMobileOpen(false);
@@ -106,11 +110,11 @@ export function Nav() {
               </a>
               <div className="w-px h-5 bg-[var(--divider)] mx-1" />
               <button
-                onClick={toggle}
+                onClick={toggleTheme}
                 className="p-2 rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)] transition-colors cursor-pointer"
-                aria-label={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"}
+                aria-label={isDark ? "切换到浅色模式" : "切换到深色模式"}
               >
-                {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+                {mounted ? (isDark ? <Sun size={16} /> : <Moon size={16} />) : null}
               </button>
             </div>
 
@@ -124,11 +128,11 @@ export function Nav() {
                 <Home size={18} />
               </Link>
               <button
-                onClick={toggle}
+                onClick={toggleTheme}
                 className="p-2 rounded-full glass backdrop-blur-xl text-[var(--text-secondary)] cursor-pointer"
-                aria-label={theme === "dark" ? "切换到浅色模式" : "切换到深色模式"}
+                aria-label={isDark ? "切换到浅色模式" : "切换到深色模式"}
               >
-                {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                {mounted ? (isDark ? <Sun size={18} /> : <Moon size={18} />) : null}
               </button>
               <button
                 onClick={() => setMobileOpen(true)}

@@ -46,6 +46,10 @@
   /* 极淡顶部光晕 */
   --glow: rgba(59, 92, 204, 0.10);
   --radius-card: 24px;
+
+  /* shadcn 危险色（destructive 变体） */
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
 }
 
 .dark {
@@ -86,6 +90,9 @@
   --scrollbar-track: #1c1c1e;
 
   --glow: rgba(91, 141, 239, 0.12);
+
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
 }
 
 @theme inline {
@@ -106,6 +113,24 @@
   --color-accent-light: var(--accent-light);
   --color-divider: var(--divider);
   --color-glass: var(--glass-bg);
+  /* ===== shadcn/ui 设计 token（映射到现有配色，供 Button/Card/Badge/NavigationMenu 使用） ===== */
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--text-on-accent);
+  --color-secondary: var(--bg-muted);
+  --color-secondary-foreground: var(--text-primary);
+  --color-card: var(--bg-card);
+  --color-card-foreground: var(--text-primary);
+  --color-popover: var(--bg-card);
+  --color-popover-foreground: var(--text-primary);
+  --color-muted: var(--bg-muted);
+  --color-muted-foreground: var(--text-secondary);
+  --color-accent: var(--bg-muted);
+  --color-accent-foreground: var(--text-primary);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--divider);
+  --color-input: var(--divider);
+  --color-ring: var(--accent);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 }
@@ -480,4 +505,33 @@ body::before {
   0%, 100% { transform: translate(0, 0) scale(1); }
   33% { transform: translate(30px, -30px) scale(1.05); }
   66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+/* ===== Magic UI · ShimmerButton 扫光 ===== */
+.sb-shimmer-btn {
+  border-radius: var(--sb-radius, 999px);
+}
+.sb-shimmer-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    110deg,
+    transparent 35%,
+    var(--sb-shimmer-color, #ffffff) 50%,
+    transparent 65%
+  );
+  background-size: 250% 100%;
+  animation: sb-shimmer var(--sb-shimmer-duration, 2.5s) ease-in-out infinite;
+  opacity: 0.5;
+  border-radius: inherit;
+  pointer-events: none;
+}
+@keyframes sb-shimmer {
+  0% { background-position: 150% 0; }
+  100% { background-position: -150% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb-shimmer-btn::before { animation: none !important; }
 }

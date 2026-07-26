@@ -5,6 +5,7 @@ import homepage from "@/data/homepage";
 import { Reveal } from "@/components/ui/reveal";
 import { Avatar } from "@/components/ui/avatar";
 import { SocialLinks } from "@/components/ui/social-links";
+import { ShimmerButton } from "@/components/magic-ui/shimmer-button";
 
 export function HomeHero() {
   const p = profile;
@@ -25,9 +26,11 @@ export function HomeHero() {
             <p className="hm-lead mt-5 max-w-xl">{p.tagline}</p>
 
             <div className="mt-9 flex flex-wrap gap-3">
-              <Link href="/resume" className="hm-btn-primary">
-                查看简历 <ArrowRight size={16} />
-              </Link>
+              <ShimmerButton asChild>
+                <Link href="/resume" className="gap-2">
+                  查看简历 <ArrowRight size={16} />
+                </Link>
+              </ShimmerButton>
               <Link href="/creative" className="hm-btn-ghost">
                 <Sparkles size={16} />
                 互动版

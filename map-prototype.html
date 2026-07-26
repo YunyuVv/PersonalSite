@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>以架构作画 · 自架构图</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    background: radial-gradient(1200px 800px at 50% 40%, #0d1424 0%, #070b14 70%);
+    color: #cbd5e1; min-height: 100vh;
+  }
+  .grid-bg { position: fixed; inset: 0; z-index: 0; }
+  header { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; }
+  header .tag-sys { color: #7dd3fc; letter-spacing: 2px; font-size: 13px; }
+  header nav a { color: #94a3b8; text-decoration: none; margin-left: 16px; font-size: 11px; }
+  header nav a:hover { color: #fff; }
+  header nav a.on { color: #7dd3fc; }
+  .title { position: relative; z-index: 2; text-align: center; margin-top: 4px; }
+  .title h1 { color: #fff; font-size: 26px; margin: 0; font-weight: 600; }
+  .title p { color: #94a3b8; font-size: 12px; margin-top: 6px; }
+  .wrap { position: relative; z-index: 2; max-width: 1120px; margin: 0 auto; display: flex; gap: 16px; padding: 8px 16px 48px; flex-wrap: wrap; }
+  .map { flex: 1 1 600px; min-width: 320px; }
+  svg#graph { width: 100%; height: auto; max-height: 74vh; }
+  .panel { flex: 1 1 280px; min-width: 260px; border: 1px solid rgba(100,116,139,.4); background: rgba(15,23,42,.72); backdrop-filter: blur(6px); border-radius: 8px; padding: 18px; font-size: 13px; line-height: 1.55; align-self: flex-start; }
+  .panel h3 { color: #fff; font-size: 17px; margin: 0 0 8px; }
+  .panel .sub { color: #7dd3fc; font-size: 13px; }
+  .panel .dim { color: #64748b; font-size: 11px; }
+  .panel a { color: #7dd3fc; word-break: break-all; }
+  .pill { display: inline-block; border: 1px solid rgba(52,211,153,.5); color: #6ee7b7; font-size: 11px; padding: 1px 6px; border-radius: 3px; margin-top: 8px; }
+  .bar { height: 6px; background: rgba(100,116,139,.3); margin-top: 3px; border-radius: 2px; overflow: hidden; }
+  .bar > i { display: block; height: 100%; background: #38bdf8; }
+  .tag { display: inline-block; background: rgba(100,116,139,.5); color: #cbd5e1; font-size: 11px; padding: 1px 6px; margin: 4px 4px 0 0; border-radius: 3px; }
+  .hint { color: #64748b; font-size: 12px; }
+  .ul { margin: 8px 0 0; padding-left: 18px; color: #cbd5e1; }
+  .ul li { margin: 3px 0; }
+  .node { cursor: pointer; }
+  text { user-select: none; }
+</style>
+</head>
+<body>
+<svg class="grid-bg" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="rgba(56,189,248,0.06)" stroke-width="1" />
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill="url(#g)" />
+</svg>
+
+<header>
+  <span class="tag-sys">~/ SYS-MAP</span>
+  <nav>
+    <a href="#">HOME</a><a href="#">RESUME</a><a href="#">CREATIVE</a><a href="#" class="on">MAP</a>
+  </nav>
+</header>
+<div class="title">
+  <h1>以架构作画</h1>
+  <p>张三 · 全栈工程师 的系统性自画像 — 悬停 / 点击节点展开</p>
+</div>
+<div class="wrap">
+  <div class="map"><svg id="graph" viewBox="0 0 1200 820"></svg></div>
+  <aside class="panel" id="detail"></aside>
+</div>
+
+<script>
+const profile = {
+  name: "张三", role: "全栈工程师", location: "深圳",
+  tagline: "以代码写诗，以架构作画",
+  bio: "我是一名在 Web 开发领域深耕五年的全栈工程师，专注于 React 生态与 Node.js 后端。我相信好的代码和好的设计一样，应该让人感到舒适。技术之外，是个国风爱好者，喜欢书法和水墨画。",
+  status: "开放新机会"
+};
+const skills = [
+  { name: "语言", items: [{name:"TypeScript",level:5},{name:"JavaScript",level:5},{name:"Python",level:3},{name:"Go",level:2}] },
+  { name: "前端", items: [{name:"React",level:5},{name:"Next.js",level:5},{name:"Vue",level:3},{name:"Tailwind CSS",level:5},{name:"Framer Motion",level:4}] },
+  { name: "后端", items: [{name:"Node.js",level:5},{name:"Express/NestJS",level:4},{name:"PostgreSQL",level:4},{name:"Redis",level:3}] },
+  { name: "基础设施", items: [{name:"Docker",level:4},{name:"Kubernetes",level:3},{name:"AWS/腾讯云",level:4},{name:"CI/CD",level:5}] },
+  { name: "工具", items: [{name:"Git",level:5},{name:"Figma",level:3},{name:"VS Code",level:5},{name:"Linux",level:4}] }
+];
+const projects = [
+  { name: "微前端治理平台", description: "一站式微前端应用管理、监控与性能分析平台", tags:["React","TypeScript","Qiankun","WebSocket"], demoUrl:"https://micro.example.com", githubUrl:"https://github.com/yourname/micro-frontend-platform" },
+  { name: "DevOps 可视化仪表盘", description: "实时 CI/CD 流水线监控与告警面板", tags:["Next.js","D3.js","WebSocket","Docker"], demoUrl:"https://dashboard.example.com", githubUrl:"https://github.com/yourname/devops-dashboard" },
+  { name: "xx-utils 工具库", description: "轻量级前端工具函数集合，2k+ 周下载量", tags:["TypeScript","Rollup","Jest"], githubUrl:"https://github.com/yourname/xx-utils" },
+  { name: "AI 对话平台", description: "基于 LLM 的多轮对话应用，支持流式响应", tags:["Next.js","OpenAI","Edge Runtime","PostgreSQL"], demoUrl:"https://chat.example.com", githubUrl:"https://github.com/yourname/ai-chat-app" },
+  { name: "电商后台管理系统", description: "全栈电商管理后台，RBAC 权限 + 数据大屏", tags:["React","Node.js","Ant Design","MongoDB"], githubUrl:"https://github.com/yourname/ecommerce-admin" }
+];
+const experiences = [
+  { company:"星辰科技", role:"高级前端工程师 / 技术负责人", start:"2021-03", end:"至今", highlights:["主导设计并落地微前端架构，支撑 8 个业务模块独立开发与部署","推动 Rust 工具链迁移，CI/CD 构建从 12 分钟优化至 3 分钟","搭建前端监控体系，线上问题定位效率提升 60%"] },
+  { company:"云帆软件", role:"前端工程师", start:"2018-07", end:"2021-02", highlights:["核心 B 端产品从 jQuery 到 React 重构，代码量减少 40%","搭建组件库与设计系统，统一 3 条产品线 UI 规范","引入 Playwright E2E，回归测试覆盖率从 0 提升至 75%"] },
+  { company:"开源贡献", role:"贡献者", start:"2019-01", end:"至今", highlights:["Ant Design 社区贡献者，提交 20+ PR 被合并","自研工具库 xx-utils 在 npm 获 2k+ 周下载量"] }
+];
+const socials = [
+  { name:"GitHub", url:"https://github.com/YunyuVv" },
+  { name:"网站", url:"https://yunyu.ideaflow.top/" }
+];
+
+const W=1200,H=820,CX=600,CY=410,R1=175,R2=105;
+const gpos = d => ({ up:{x:CX,y:CY-R1}, down:{x:CX,y:CY+R1}, left:{x:CX-R1,y:CY}, right:{x:CX+R1,y:CY} }[d]);
+function lpos(d,gp,i,n){
+  const sx=Math.min(125,(W-240)/Math.max(n,1)), sy=Math.min(82,(H-240)/Math.max(n,1)), off=i-(n-1)/2;
+  return ({ up:{x:CX+off*sx,y:gp.y-R2}, down:{x:CX+off*sx,y:gp.y+R2}, left:{x:gp.x-R2,y:CY+off*sy}, right:{x:gp.x+R2,y:CY+off*sy} })[d];
+}
+
+const nodes=[], edges=[];
+nodes.push({id:"me",kind:"center",label:profile.name,sub:profile.role,x:CX,y:CY});
+const groups=[
+  {id:"skills",label:"技能",dir:"up",leaves:skills.map(c=>({id:"sk-"+c.name,label:c.name,payload:{kind:"skill",data:c}}))},
+  {id:"projects",label:"项目",dir:"right",leaves:projects.map(p=>({id:"pj-"+p.name,label:p.name,sub:p.description,payload:{kind:"project",data:p}}))},
+  {id:"experience",label:"经历",dir:"down",leaves:experiences.map((e,i)=>({id:"ex-"+i,label:e.company,sub:e.role,payload:{kind:"experience",data:e}}))},
+  {id:"contact",label:"联系",dir:"left",leaves:socials.map(s=>({id:"so-"+s.name,label:s.name,sub:s.url,payload:{kind:"social",data:s}}))}
+];
+groups.forEach(g=>{
+  const gp=gpos(g.dir);
+  nodes.push({id:g.id,kind:"group",label:g.label,x:gp.x,y:gp.y});
+  edges.push(["me",g.id]);
+  g.leaves.forEach((l,i)=>{
+    const lp=lpos(g.dir,gp,i,g.leaves.length);
+    nodes.push({id:l.id,kind:"leaf",label:l.label,sub:l.sub,parent:g.id,x:lp.x,y:lp.y,payload:l.payload});
+    edges.push([g.id,l.id]);
+  });
+});
+
+const NS="http://www.w3.org/2000/svg";
+const mk=(t,a)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+const svg=document.getElementById("graph");
+const edgeEls={}, nodeEls={};
+
+edges.forEach(([a,b])=>{
+  const na=nodes.find(n=>n.id===a), nb=nodes.find(n=>n.id===b);
+  const d = a==="me" ? `M${na.x},${na.y} Q${(na.x+nb.x)/2},${(na.y+nb.y)/2-40} ${nb.x},${nb.y}` : `M${na.x},${na.y} L${nb.x},${nb.y}`;
+  const p=mk("path",{d,fill:"none",stroke:"rgba(148,163,184,0.22)","stroke-width":1});
+  svg.appendChild(p); edgeEls[a+"->"+b]=p;
+});
+
+nodes.forEach(n=>{
+  const r = n.kind==="center"?46 : n.kind==="group"?30 : 22;
+  const g=mk("g",{class:"node",transform:`translate(${n.x},${n.y})`});
+  const c=mk("circle",{r,fill:"rgba(15,23,42,0.92)",stroke:n.kind==="center"?"#e2e8f0":"rgba(148,163,184,0.55)","stroke-width":n.kind==="center"?1.6:1.2});
+  g.appendChild(c);
+  const t1=mk("text",{text:"middle",dy:n.sub?"-0.1em":"0.32em","font-size":n.kind==="center"?14:(n.kind==="group"?13:10),fill:n.kind==="center"?"#fff":"#cbd5e1"});
+  t1.textContent = n.label.length>8 ? n.label.slice(0,7)+"…" : n.label;
+  g.appendChild(t1);
+  if(n.sub){
+    const t2=mk("text",{text:"middle",dy:"1.1em","font-size":(n.kind==="group"?9:8),fill:"rgba(148,163,184,0.7)"});
+    t2.textContent = n.sub.length>14 ? n.sub.slice(0,13)+"…" : n.sub;
+    g.appendChild(t2);
+  }
+  g.addEventListener("mouseenter",()=>setActive(n.id));
+  g.addEventListener("mouseleave",()=>setActive(null));
+  g.addEventListener("click",(e)=>{e.stopPropagation();togglePin(n.id);});
+  svg.appendChild(g);
+  nodeEls[n.id]={g,c,t1};
+});
+svg.addEventListener("click",()=>{pinned=null;render();});
+
+let active=null, pinned=null;
+function setActive(id){ active = id; render(); }
+function togglePin(id){ pinned = (pinned===id)?null:id; render(); }
+
+function render(){
+  const cur = active ?? pinned;
+  const curNode = nodes.find(n=>n.id===cur);
+  const hiN=new Set(), hiE=new Set();
+  if(curNode){
+    if(curNode.kind==="center"){ nodes.forEach(n=>hiN.add(n.id)); edges.forEach(([a,b])=>hiE.add(a+"->"+b)); }
+    else if(curNode.kind==="group"){ hiN.add("me"); hiN.add(curNode.id); edges.forEach(([a,b])=>{ if(a===curNode.id||b===curNode.id){hiN.add(a);hiN.add(b);hiE.add(a+"->"+b);} }); }
+    else { const g=curNode.parent; hiN.add("me"); hiN.add(g); hiN.add(curNode.id); hiE.add("me->"+g); hiE.add(g+"->"+curNode.id); }
+  }
+  for(const id in nodeEls){
+    const on=hiN.has(id), n=nodes.find(x=>x.id===id);
+    nodeEls[id].c.setAttribute("fill", on?"rgba(56,189,248,0.14)":"rgba(15,23,42,0.92)");
+    nodeEls[id].c.setAttribute("stroke", on?"#38bdf8":(n.kind==="center"?"#e2e8f0":"rgba(148,163,184,0.55)"));
+    nodeEls[id].c.setAttribute("stroke-width", on?2:(n.kind==="center"?1.6:1.2));
+    nodeEls[id].t1.setAttribute("fill", on?"#f8fafc":(n.kind==="center"?"#fff":"#cbd5e1"));
+  }
+  for(const k in edgeEls){
+    const on=hiE.has(k);
+    edgeEls[k].setAttribute("stroke", on?"rgba(56,189,248,0.75)":"rgba(148,163,184,0.22)");
+    edgeEls[k].setAttribute("stroke-width", on?1.8:1);
+  }
+  document.getElementById("detail").innerHTML = detailHTML(curNode);
+}
+
+function detailHTML(n){
+  if(!n){
+    return '<p class="hint">// 悬停或点击任意节点<br>查看「'+profile.name+'」的系统拓扑——<br>技能、项目、经历与联系，皆由此人连接。</p>';
+  }
+  if(n.kind==="center"){
+    return '<h3>'+profile.name+'</h3><div class="sub">'+profile.role+' · '+profile.location+'</div><div class="dim" style="font-style:italic;margin-top:6px">“'+profile.tagline+'”</div><p style="margin-top:10px">'+profile.bio+'</p><span class="pill">● '+profile.status+'</span>';
+  }
+  if(n.kind==="group"){
+    const g=groups.find(x=>x.id===n.id);
+    return '<h3>'+n.label+' 模块</h3><div class="dim">包含 '+g.leaves.length+' 个节点，悬停查看明细。</div><ul class="ul">'+g.leaves.map(l=>'<li>'+l.label+'</li>').join('')+'</ul>';
+  }
+  const p=n.payload, d=p.data;
+  if(p.kind==="skill"){
+    return '<h3>'+d.name+'</h3>'+d.items.map(it=>'<div style="margin-top:6px"><div style="display:flex;justify-content:space-between;font-size:11px"><span>'+it.name+'</span><span class="dim">L'+it.level+'</span></div><div class="bar"><i style="width:'+(it.level/5*100)+'%"></i></div></div>').join('');
+  }
+  if(p.kind==="project"){
+    return '<h3>'+d.name+'</h3><p style="margin-top:6px">'+d.description+'</p><div>'+d.tags.map(t=>'<span class="tag">'+t+'</span>').join('')+'</div><div style="margin-top:8px;font-size:12px">'+((d.demoUrl)?'<a href="'+d.demoUrl+'" target="_blank">Demo ↗</a> ':'')+((d.githubUrl)?'<a href="'+d.githubUrl+'" target="_blank">GitHub ↗</a>':'')+'</div>';
+  }
+  if(p.kind==="experience"){
+    return '<h3>'+d.company+'</h3><div class="sub">'+d.role+'</div><div class="dim">'+d.start+' — '+d.end+'</div><ul class="ul">'+d.highlights.map(h=>'<li>'+h+'</li>').join('')+'</ul>';
+  }
+  return '<h3>'+d.name+'</h3><a href="'+d.url+'" target="_blank">'+d.url+'</a>';
+}
+render();
+</script>
+</body>
+</html>
