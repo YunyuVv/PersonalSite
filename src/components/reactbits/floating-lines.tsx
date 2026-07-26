@@ -505,7 +505,7 @@ export function FloatingLines({
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-full overflow-hidden pointer-events-none ${className}`}
+      className={`relative w-full h-full overflow-hidden ${interactive ? "" : "pointer-events-none"} ${className}`}
       style={{ mixBlendMode }}
       aria-hidden="true"
     />

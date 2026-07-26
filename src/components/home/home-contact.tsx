@@ -5,6 +5,7 @@ import { Mail, Check } from "lucide-react";
 import profile from "@/data/profile";
 import { Reveal } from "@/components/ui/reveal";
 import { SocialLinks } from "@/components/ui/social-links";
+import { ElectricBorder } from "@/components/reactbits/electric-border";
 
 export function HomeContact() {
   const [copied, setCopied] = useState(false);
@@ -28,25 +29,34 @@ export function HomeContact() {
           无论合作、招聘还是单纯聊聊技术，欢迎随时来信。
         </p>
 
-        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <button
-            onClick={copyEmail}
-            className="hm-btn-primary"
+        <div className="mt-10 inline-block">
+          <ElectricBorder
+            color="var(--accent)"
+            speed={0.6}
+            chaos={0.08}
+            borderRadius={20}
           >
-            {copied ? <Check size={16} /> : <Mail size={16} />}
-            {copied ? "已复制邮箱" : profile.email}
-          </button>
-          <a
-            href={`mailto:${profile.email}`}
-            className="hm-btn-ghost"
-          >
-            <Mail size={16} />
-            直接发邮件
-          </a>
-        </div>
+            <div className="p-8 sm:p-10 flex flex-col items-center gap-6">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button
+                  onClick={copyEmail}
+                  className="hm-btn-primary"
+                >
+                  {copied ? <Check size={16} /> : <Mail size={16} />}
+                  {copied ? "已复制邮箱" : profile.email}
+                </button>
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="hm-btn-ghost"
+                >
+                  <Mail size={16} />
+                  直接发邮件
+                </a>
+              </div>
 
-        <div className="mt-8 flex items-center justify-center">
-          <SocialLinks iconSize={18} />
+              <SocialLinks iconSize={18} />
+            </div>
+          </ElectricBorder>
         </div>
       </div>
     </Reveal>

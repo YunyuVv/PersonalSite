@@ -102,10 +102,10 @@ export default function DemoPage() {
         )}
       </div>
 
-      {/* ── 内容层 ── */}
-      <div className="relative z-10 flex flex-col min-h-screen">
+      {/* ── 内容层 (pointer-events-none 让鼠标事件穿透到背景 canvas) ── */}
+      <div className="relative z-10 flex flex-col min-h-screen pointer-events-none">
         {/* 顶部：Tab 切换 */}
-        <header className="px-4 pt-5 pb-3">
+        <header className="px-4 pt-5 pb-3 pointer-events-auto">
           <div className="max-w-4xl mx-auto flex items-center gap-2">
             <span className="text-sm font-bold tracking-wide opacity-60 mr-2">ReactBits</span>
             {TABS.map((t) => (
@@ -168,7 +168,7 @@ export default function DemoPage() {
         </div>
 
         {/* 底部控制面板 */}
-        <div className="px-4 pb-6">
+        <div className="px-4 pb-6 pointer-events-auto">
           <div className="max-w-4xl mx-auto bg-black/40 backdrop-blur-xl border border-white/[.08] rounded-2xl p-5">
             <div className="flex items-center gap-2 mb-4">
               <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">Controls</span>

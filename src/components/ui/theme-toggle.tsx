@@ -18,7 +18,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
     <button
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className={`p-2 rounded-full glass text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-muted)] transition-colors cursor-pointer ${className}`}
-      aria-label={isDark ? "切换到浅色模式" : "切换到深色模式"}
+      aria-label={mounted ? (isDark ? "切换到浅色模式" : "切换到深色模式") : "切换主题"}
     >
       {mounted ? (
         isDark ? (
