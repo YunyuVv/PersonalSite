@@ -1,13 +1,20 @@
 import profile from "@/data/profile";
 import homepage from "@/data/homepage";
 import { Reveal } from "@/components/ui/reveal";
+import { BlurText } from "@/components/reactbits/blur-text";
 
 export function HomeAbout() {
   return (
     <Reveal id="about" className="hm-section hm-hairline">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <span className="hm-eyebrow">关于 / About</span>
-        <p className="hm-statement mt-6 max-w-4xl">{homepage.philosophy}</p>
+        <BlurText
+          text={homepage.philosophy}
+          className="hm-statement mt-6 max-w-4xl"
+          animateBy="words"
+          delay={0.06}
+          stepDuration={0.4}
+        />
 
         <dl className="mt-12 grid grid-cols-2 sm:grid-cols-3 gap-x-8 gap-y-6">
           <div>

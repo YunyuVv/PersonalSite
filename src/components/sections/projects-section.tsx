@@ -1,6 +1,9 @@
+"use client";
+
 import profile from "@/data/profile";
 import { Reveal } from "@/components/ui/reveal";
 import { ProjectCard } from "@/components/ui/project-card";
+import { TiltedCard } from "@/components/reactbits/tilted-card";
 
 export function ProjectsSection() {
   return (
@@ -13,7 +16,15 @@ export function ProjectsSection() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
         {profile.projects.map((project, i) => (
-          <ProjectCard key={project.id} project={project} index={i} />
+          <TiltedCard
+            key={project.id}
+            containerHeight="280px"
+            containerWidth="100%"
+            scaleOnHover={1.03}
+            rotateAmplitude={10}
+          >
+            <ProjectCard project={project} index={i} />
+          </TiltedCard>
         ))}
       </div>
     </Reveal>

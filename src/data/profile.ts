@@ -2,7 +2,7 @@ import { Profile } from "@/types/profile";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const profile: Profile = {
-  name: "张三",
+  name: "YunYu",
   role: "全栈工程师",
   tagline: "以代码写诗，以架构作画",
   location: "深圳",
@@ -153,10 +153,49 @@ const profile: Profile = {
       githubUrl: "https://github.com/yourname/ecommerce-admin",
     },
   ],
-  siteConfig: {
-    title: "张三 | 全栈工程师",
+  mbti: {
+    type: "INTP",
+    name: "逻辑学家",
+    nameEn: "The Logician",
     description:
-      "张三的个人站点——全栈工程师，专注于 React 生态与 Node.js 后端，热爱开源与技术分享",
+      "安静灵活的思考者，对理论和抽象想法充满热情。喜欢用逻辑分析一切事物的本质，享受独立解决问题的过程。",
+    dimensions: [
+      {
+        left: "I",
+        right: "E",
+        leftName: "内向",
+        rightName: "外向",
+        score: 22,
+      },
+      {
+        left: "N",
+        right: "S",
+        leftName: "直觉",
+        rightName: "感觉",
+        score: 18,
+      },
+      {
+        left: "T",
+        right: "F",
+        leftName: "思考",
+        rightName: "情感",
+        score: 15,
+      },
+      {
+        left: "P",
+        right: "J",
+        leftName: "感知",
+        rightName: "判断",
+        score: 28,
+      },
+    ],
+    strengths: ["逻辑分析", "创造性思维", "客观公正", "适应力强", "求知欲旺盛"],
+    weaknesses: ["过度分析", "忽视情感", "难以决策", "容易分心"],
+  },
+  siteConfig: {
+    title: "YunYu | 全栈工程师",
+    description:
+      "YunYu 的个人站点——全栈工程师，专注于 React 生态与 Node.js 后端，热爱开源与技术分享",
     url: "https://example.com",
     ogImage: "/images/og.png",
   },

@@ -11,6 +11,10 @@ import { SocialLinks } from "@/components/ui/social-links";
 import { ShimmerButton } from "@/components/magic-ui/shimmer-button";
 import { LightRays } from "@/components/reactbits/light-rays";
 import { ElectricBorder } from "@/components/reactbits/electric-border";
+import { SplitText } from "@/components/reactbits/split-text";
+import { DecryptedText } from "@/components/reactbits/decrypted-text";
+import { ShinyText } from "@/components/reactbits/shiny-text";
+import { ClickSpark } from "@/components/reactbits/click-spark";
 
 /* ─── Stagger delay helper ─── */
 const d = (i: number) => ({ duration: 0.6, delay: 0.1 + i * 0.1, ease: [0.22, 1, 0.36, 1] as const });
@@ -24,6 +28,7 @@ export function HomeHeroFull() {
 
   return (
     <section className="relative h-screen min-h-[700px] flex flex-col overflow-hidden bg-[var(--bg-primary)]">
+      <ClickSpark sparkCount={8} sparkRadius={20} sparkSize={12} duration={400}>
       {/* ── LightRays 全屏背景 ── */}
       <div className="absolute inset-0 opacity-60 dark:opacity-90" aria-hidden="true">
         <LightRays
@@ -64,36 +69,41 @@ export function HomeHeroFull() {
               </span>
             </motion.div>
 
-            {/* 名字 */}
-            <motion.h1
-              initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={d(1)}
-              className="mt-6 text-[clamp(3.5rem,8vw,7rem)] leading-[0.9] font-bold tracking-tight text-[var(--text-primary)]"
-              style={{ fontFamily: "var(--font-display), sans-serif" }}
-            >
-              {p.name}
-            </motion.h1>
+            {/* 名字 — SplitText 逐字母入场 */}
+            <div className="mt-6">
+              <SplitText
+                text={p.name}
+                tag="h1"
+                className="text-[clamp(3.5rem,8vw,7rem)] leading-[0.9] font-bold tracking-tight text-[var(--text-primary)]"
+                delay={0.05}
+                duration={0.5}
+              />
+            </div>
 
-            {/* 角色 */}
-            <motion.p
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={d(2)}
-              className="mt-5 text-xl sm:text-2xl font-medium text-[var(--text-primary)]/80"
-            >
-              {p.role}
-            </motion.p>
+            {/* 角色 — ShinyText 微光扫过 */}
+            <div className="mt-5">
+              <ShinyText
+                text={p.role}
+                className="text-xl sm:text-2xl font-medium"
+                color="var(--text-primary)"
+                shineColor="var(--accent-light)"
+                speed={3}
+              />
+            </div>
 
-            {/* 标语 */}
-            <motion.p
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={d(3)}
-              className="mt-3 text-base sm:text-lg text-[var(--text-secondary)]"
-            >
-              {p.tagline}
-            </motion.p>
+            {/* 标语 — DecryptedText 解密效果 */}
+            <p className="mt-3 text-base sm:text-lg text-[var(--text-secondary)]">
+              <DecryptedText
+                text={p.tagline}
+                speed={60}
+                sequential
+                revealDirection="start"
+                characters="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*"
+                animateOn="view"
+                className="text-[var(--text-secondary)]"
+                encryptedClassName="text-[var(--accent)]/60"
+              />
+            </p>
 
             {/* 按钮 */}
             <motion.div
@@ -157,6 +167,7 @@ export function HomeHeroFull() {
           <ChevronDown size={16} />
         </motion.div>
       </motion.a>
+      </ClickSpark>
     </section>
   );
 }

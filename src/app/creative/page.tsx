@@ -218,7 +218,7 @@ export default function CreativePage() {
       {/* 顶部极简导航（mix-blend 保证任意底色可读） */}
       <header className="fixed top-0 inset-x-0 z-50 flex items-center justify-between px-6 md:px-12 py-5 mix-blend-difference">
         <a href="/" className="creative-display text-xl" data-cursor="hover">
-          张三<span className="creative-grad-text">.</span>
+          YunYu<span className="creative-grad-text">.</span>
         </a>
         <nav className="creative-mono text-sm flex items-center gap-6">
           <a href="/" data-cursor="hover" aria-label="返回首页" className="hover:opacity-70 flex items-center gap-1">
@@ -236,7 +236,7 @@ export default function CreativePage() {
           © 2026 — 全栈工程师 / CREATIVE ENGINEER
         </p>
         <h1 className="creative-display text-[22vw] md:text-[12vw] leading-[0.84] relative z-10">
-          张三
+          YunYu
         </h1>
         <div className="mt-6 flex flex-wrap items-end gap-x-4 gap-y-2 relative z-10">
           <span className="creative-display text-3xl md:text-6xl creative-grad-text">我用代码造东西</span>

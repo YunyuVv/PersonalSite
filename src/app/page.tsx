@@ -5,6 +5,7 @@ import { BackToTop } from "@/components/ui/back-to-top";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { HomeHeroFull } from "@/components/home/home-hero-full";
 import { HomeFeatured } from "@/components/home/home-featured";
+import { MBTISection } from "@/components/sections/mbti-section";
 import { HomeAbout } from "@/components/home/home-about";
 import { HomeContact } from "@/components/home/home-contact";
 
@@ -27,6 +28,7 @@ export default function HomePage() {
       <main className="flex-1">
         <HomeHeroFull />
         <HomeFeatured />
+        <MBTISection variant="hero" />
         <HomeAbout />
         <HomeContact />
       </main>
