@@ -4,7 +4,8 @@ WORKDIR /app
 RUN corepack enable
 # 防止部分环境下 NODE_OPTIONS=--use-system-ca 导致 Next/Turbopack 构建失败
 ENV NODE_OPTIONS=
-COPY package.json pnpm-lock.yaml ./
+# pnpm-workspace.yaml 必须在 install 前进入构建上下文，pnpm 才能读取其中的 overrides / onlyBuiltDependencies
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 RUN pnpm build
