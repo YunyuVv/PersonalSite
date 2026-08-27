@@ -43,8 +43,13 @@ export default function AdminPage() {
   const [token, setToken] = useState("");
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [jsonDrafts, setJsonDrafts] = useState<Record<string, string>>({});
-  const [error, setError] = useState<string | null>(null);
-  const [status, setStatus] = useState<string | null>(null);
+  const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } |  null>(null);
+
+  useEffect(() => {
+    if (!toast) return;
+    const t = setTimeout(() => setToast(null), 2000);
+    return () => clearTimeout(t);
+  }, [toast]);
 
   useEffect(() => {
     const saved = localStorage.getItem("admin_token");
@@ -52,14 +57,13 @@ export default function AdminPage() {
   }, []);
 
   async function load() {
-    setError(null);
-    setStatus(null);
+    setToast(null);
     try {
       const res = await fetch(`/api/admin/config?ts=${Date.now()}`, {
         headers: token ? { authorization: `Bearer ${token}` } : {},
       });
       if (res.status === 401) {
-        setError("未授权：请确认 Token 正确（或先在 .env 设置 ADMIN_TOKEN）。");
+        setToast({ type: "error", msg: "未授权：请确认 Token 正确（或先在 .env 设置 ADMIN_TOKEN）。" });
         return;
       }
       const data = (await res.json()) as SiteConfig;
@@ -71,7 +75,7 @@ export default function AdminPage() {
         projects: JSON.stringify(data.projects, null, 2),
       });
     } catch (e) {
-      setError("加载失败：" + (e instanceof Error ? e.message : String(e)));
+      setToast({ type: "error", msg: "加载失败：" + (e instanceof Error ? e.message : String(e)) });
     }
   }
 
@@ -136,14 +140,13 @@ export default function AdminPage() {
 
   async function save() {
     if (!config) return;
-    setError(null);
-    setStatus(null);
+    setToast(null);
     const parsed: Record<string, unknown> = {};
     for (const key of ADVANCED_KEYS) {
       try {
         parsed[key] = JSON.parse(jsonDrafts[key] || "[]");
       } catch {
-        setError(`${key} 不是合法 JSON，保存已中止。`);
+        setToast({ type: "error", msg: `❌ ${key} 不是合法 JSON，保存已中止。` });
         return;
       }
     }
@@ -155,17 +158,16 @@ export default function AdminPage() {
         body: JSON.stringify(payload),
       });
       if (res.status === 401) {
-        setError("未授权：Token 错误。");
+        setToast({ type: "error", msg: "未授权：Token 错误。" });
         return;
       }
       if (!res.ok) {
-        setError("保存失败：" + (await res.text()));
+        setToast({ type: "error", msg: "❌ 保存失败：" + (await res.text()) });
         return;
       }
-      setStatus("已保存，首页将于下次刷新时生效（无需重启）。");
-      load();
+      setToast({ type: "success", msg: "✅ 保存成功，首页将于下次刷新时生效（无需重启）。" });
     } catch (e) {
-      setError("保存失败：" + (e instanceof Error ? e.message : String(e)));
+      setToast({ type: "error", msg: "❌ 保存失败：" + (e instanceof Error ? e.message : String(e)) });
     }
   }
 
@@ -195,8 +197,8 @@ export default function AdminPage() {
               读取配置
             </button>
           </div>
-          {error && <p className="text-red-500 text-sm">{error}</p>}
         </div>
+        <Toast toast={toast} />
       </main>
     );
   }
@@ -229,12 +231,7 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {error && (
-          <p className="text-red-500 text-sm bg-red-500/10 border border-red-500/30 rounded-md px-3 py-2">{error}</p>
-        )}
-        {status && (
-          <p className="text-green-500 text-sm bg-green-500/10 border border-green-500/30 rounded-md px-3 py-2">{status}</p>
-        )}
+        <Toast toast={toast} />
 
         <Section title="基础信息">
           <Field label="姓名" value={config.name} onChange={(v) => setTop("name", v)} />
@@ -432,6 +429,21 @@ export default function AdminPage() {
         </button>
       </div>
     </main>
+  );
+}
+
+function Toast({ toast }: { toast: { type: "success" | "error"; msg: string } | null }) {
+  if (!toast) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+      <div
+        className={`rounded-lg px-5 py-3 text-sm font-medium shadow-lg ${
+          toast.type === "success" ? "bg-green-600 text-white" : "bg-red-600 text-white"
+        }`}
+      >
+        {toast.msg}
+      </div>
+    </div>
   );
 }
 
