@@ -1,7 +1,7 @@
 "use client";
 
 import { MapPin } from "lucide-react";
-import profile from "@/data/profile";
+import { useSiteConfig } from "@/lib/site-config-context";
 import { Reveal } from "@/components/ui/reveal";
 import { CountUp } from "@/components/reactbits/count-up";
 
@@ -17,6 +17,7 @@ const FOCUS = ["TypeScript", "React", "Next.js", "Node.js", "CI/CD"];
  * 简历页侧栏 — 状态、数据、聚焦三个 Bento 卡片
  */
 export function SidebarSection() {
+  const config = useSiteConfig();
   return (
     <div className="md:col-span-2 flex flex-col gap-4 md:gap-5">
       {/* 现状 */}
@@ -25,7 +26,7 @@ export function SidebarSection() {
         <div className="mt-4 space-y-3">
           <div className="flex items-center gap-2 text-[var(--text-primary)]">
             <MapPin size={16} className="text-[var(--accent)]" />
-            <span className="text-sm font-medium">{profile.location}</span>
+            <span className="text-sm font-medium">{config.location}</span>
           </div>
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse-soft" />

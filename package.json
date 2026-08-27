@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "next dev -p 12002",
     "build": "next build",
+    "build:static": "node scripts/build-static.mjs",
+    "serve:static": "npx serve out",
     "start": "next start",
     "lint": "eslint",
     "build:worker": "opennextjs-cloudflare build",

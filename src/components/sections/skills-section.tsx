@@ -20,7 +20,7 @@ import {
   SiGo,
   SiLinux,
 } from "react-icons/si";
-import profile from "@/data/profile";
+import { useSiteConfig } from "@/lib/site-config-context";
 import { Reveal } from "@/components/ui/reveal";
 import { LogoLoop, type LogoItem } from "@/components/reactbits/logo-loop";
 
@@ -50,13 +50,13 @@ const TECH_LOGOS: Record<string, { icon: React.ReactNode; color: string }> = {
   "VS Code":   { icon: <SiGit />,          color: "#007ACC" },
 };
 
-/* ─── Build LogoItem array from profile.skills ─── */
+/* ─── Build LogoItem array from config.skills ─── */
 
-function buildLogos(): LogoItem[] {
+function buildLogos(config: ReturnType<typeof useSiteConfig>): LogoItem[] {
   const seen = new Set<string>();
   const items: LogoItem[] = [];
 
-  for (const cat of profile.skills) {
+  for (const cat of config.skills) {
     for (const skill of cat.items) {
       if (seen.has(skill.name)) continue;
       seen.add(skill.name);
@@ -81,7 +81,8 @@ function buildLogos(): LogoItem[] {
 /* ─── Component ─── */
 
 export function SkillsSection() {
-  const logos = buildLogos();
+  const config = useSiteConfig();
+  const logos = buildLogos(config);
 
   return (
     <Reveal id="skills" className="md:col-span-3 bento-card p-7 flex flex-col">
@@ -106,7 +107,7 @@ export function SkillsSection() {
 
       {/* 分类标签 (保留原有布局) */}
       <div className="mt-5 space-y-4">
-        {profile.skills.map((cat) => (
+        {config.skills.map((cat) => (
           <div key={cat.name}>
             <p className="text-xs font-medium text-[var(--text-muted)] mb-2">
               {cat.name}

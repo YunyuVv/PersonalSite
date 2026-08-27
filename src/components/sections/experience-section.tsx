@@ -1,10 +1,11 @@
-import profile from "@/data/profile";
+import { getSiteConfig } from "@/lib/config";
 import { Reveal } from "@/components/ui/reveal";
 
 export function ExperienceSection() {
+  const config = getSiteConfig();
   const items = [
-    ...profile.experiences.map((e) => ({ type: "exp" as const, ...e })),
-    ...profile.education.map((e) => ({
+    ...config.experiences.map((e) => ({ type: "exp" as const, ...e })),
+    ...config.education.map((e) => ({
       type: "edu" as const,
       company: e.school,
       role: `${e.degree} · ${e.major}`,

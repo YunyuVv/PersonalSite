@@ -1,0 +1,17 @@
+services:
+  site:
+    # 镜像由 GitHub Actions 在 push 到 main-xianyu-qingzheng 分支时自动构建并推送到 GHCR，这里只引用镜像，不再本地 build。
+    # 镜像名固定带分支标识 xianyu-qingzheng，并支持 linux/amd64 与 linux/arm64 双架构；
+    # 也可用环境变量覆盖：IMAGE_NAME=ghcr.io/YunyuVv/personal-site:xianyu-qingzheng docker compose up -d
+    image: ${IMAGE_NAME:-ghcr.io/yunyuvv/personal-site:xianyu-qingzheng}
+    ports:
+      - "12002:3000"
+    volumes:
+      # 配置持久化：宿主 ../data（仓库根 data/）挂载进容器，首次为空时由程序写入默认 seed
+      # 注意：本文件位于 docker/ 目录，相对路径相对本文件，故用 ../data 指向仓库根
+      - ../data:/app/data
+    environment:
+      - PORT=3000
+      # 后台登录口令，请改为强随机值；后台访问 /admin 时携带此 Token
+      - ADMIN_TOKEN=change-me
+    restart: unless-stopped

@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import profile from "@/data/profile";
+import { useSiteConfig } from "@/lib/site-config-context";
 
 interface AvatarProps {
-  /** 头像图片地址，缺省使用 profile.avatar */
+  /** 头像图片地址，缺省使用 config.avatar */
   src?: string;
-  /** 用于回退字母与 alt，缺省使用 profile.name */
+  /** 用于回退字母与 alt，缺省使用 config.name */
   name?: string;
   /** 像素尺寸（正方形），缺省 160 */
   size?: number;
@@ -24,16 +24,19 @@ interface AvatarProps {
  * 模块化、可复用：首页、简历页、互动版、页脚均可使用。
  */
 export function Avatar({
-  src = profile.avatar,
-  name = profile.name,
+  src,
+  name,
   size = 160,
   className = "",
   link = false,
   priority = false,
 }: AvatarProps) {
+  const config = useSiteConfig();
+  const avatarSrc = src ?? config.avatar;
+  const avatarName = name ?? config.name;
   const [errored, setErrored] = useState(false);
-  const showImage = Boolean(src) && !errored;
-  const monogram = (name.trim().charAt(0) || "?").toUpperCase();
+  const showImage = Boolean(avatarSrc) && !errored;
+  const monogram = (avatarName.trim().charAt(0) || "?").toUpperCase();
 
   const inner = (
     <span
@@ -50,8 +53,8 @@ export function Avatar({
       {showImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={src}
-          alt={name}
+          src={avatarSrc}
+          alt={avatarName}
           className="absolute inset-0 h-full w-full object-cover"
           onError={() => setErrored(true)}
           loading={priority ? "eager" : "lazy"}
@@ -66,7 +69,7 @@ export function Avatar({
     return (
       <Link
         href="/"
-        aria-label={`${name} 的主页`}
+        aria-label={`${avatarName} 的主页`}
         className="inline-flex transition-transform duration-300 hover:scale-[1.03] cursor-pointer"
       >
         {inner}

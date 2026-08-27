@@ -1,11 +1,12 @@
 "use client";
 
-import profile from "@/data/profile";
+import { useSiteConfig } from "@/lib/site-config-context";
 import { Reveal } from "@/components/ui/reveal";
 import { SpotlightCard } from "@/components/reactbits/spotlight-card";
 
 export function AboutSection() {
-  const paragraphs = profile.bio.split("\n\n").filter(Boolean);
+  const config = useSiteConfig();
+  const paragraphs = config.bio.split("\n\n").filter(Boolean);
 
   return (
     <Reveal id="about" className="md:col-span-3 bento-card flex flex-col">

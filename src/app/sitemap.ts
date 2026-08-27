@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
-import profile from "@/data/profile";
+import { getSiteConfig } from "@/lib/config";
+
+// 静态导出要求显式声明缓存策略；sitemap 内容极少变化，两种模式下都用 force-static 固化即可
+export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = profile.siteConfig.url;
+  const base = getSiteConfig().siteConfig.url;
   return [
     { url: `${base}/`, lastModified: new Date(), changeFrequency: "monthly", priority: 1 },
-    { url: `${base}/resume`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.8 },
-    { url: `${base}/creative`, lastModified: new Date(), changeFrequency: "monthly", priority: 0.5 },
   ];
 }

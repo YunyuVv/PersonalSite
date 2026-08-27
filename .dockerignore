@@ -1,0 +1,11 @@
+node_modules
+.next
+.open-next
+out
+.git
+.workbuddy
+npm-debug.log
+Dockerfile
+docker-compose.yml
+README.md
+*.md

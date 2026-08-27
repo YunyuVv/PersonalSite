@@ -1,0 +1,57 @@
+name: Build Image (main-xianyu-qingzheng)
+
+# 触发：push 到 main-xianyu-qingzheng 分支时自动构建并推送镜像到 GHCR
+on:
+  push:
+    branches:
+      - main-xianyu-qingzheng
+  # 允许手动触发
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write # 推送镜像到 GitHub Container Registry (ghcr.io) 所需
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 多架构构建需要 QEMU 模拟，才能在 amd64 runner 上编译 arm64
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 镜像名固定带分支标识 xianyu-qingzheng；GitHub owner 可能含大写，ghcr 要求小写
+      - name: Compute image name
+        id: meta
+        run: |
+          OWNER=$(echo "${GITHUB_REPOSITORY%%/*}" | tr '[:upper:]' '[:lower:]')
+          echo "image=ghcr.io/${OWNER}/personal-site:xianyu-qingzheng" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push (linux/amd64, linux/arm64)
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          # Dockerfile 位于 docker/ 子目录，构建上下文仍为仓库根（保留根目录 .dockerignore 生效）
+          file: docker/Dockerfile
+          push: true
+          # 同时支持 x86_64 与 ARM64（如树莓派、Apple Silicon 服务器、AWS Graviton）
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.image }}
+          cache-from: type=gha
+          cache-to: type=gha
+
+      - name: Output image
+        run: echo "镜像已推送：${{ steps.meta.outputs.image }}"

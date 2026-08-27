@@ -1,12 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { ArrowRight, Mail, Sparkles, ChevronDown } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import profile from "@/data/profile";
-import homepage from "@/data/homepage";
+import { useSiteConfig } from "@/lib/site-config-context";
 import { SocialLinks } from "@/components/ui/social-links";
 import { ShimmerButton } from "@/components/magic-ui/shimmer-button";
 import { LightRays } from "@/components/reactbits/light-rays";
@@ -20,7 +18,7 @@ import { ClickSpark } from "@/components/reactbits/click-spark";
 const d = (i: number) => ({ duration: 0.6, delay: 0.1 + i * 0.1, ease: [0.22, 1, 0.36, 1] as const });
 
 export function HomeHeroFull() {
-  const p = profile;
+  const p = useSiteConfig();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -53,22 +51,10 @@ export function HomeHeroFull() {
       />
 
       {/* ── 主内容：左右分栏 ── */}
-      <div className="relative z-10 flex-1 flex items-center px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div className="relative z-10 flex-1 flex items-start pt-[15vh] lg:pt-[18vh] px-6 sm:px-10 lg:px-16 xl:px-24">
         <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-center">
           {/* ─ 左侧：文字区 ─ */}
           <div className="max-w-xl">
-            {/* 状态徽章 */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={d(0)}
-            >
-              <span className="hm-eyebrow">
-                <span className="hm-dot" />
-                {homepage.statusBadge} · {p.location}
-              </span>
-            </motion.div>
-
             {/* 名字 — SplitText 逐字母入场 */}
             <div className="mt-6">
               <SplitText
@@ -113,18 +99,10 @@ export function HomeHeroFull() {
               className="mt-10 flex flex-wrap gap-3"
             >
               <ShimmerButton asChild>
-                <Link href="/resume" className="gap-2">
-                  查看简历 <ArrowRight size={16} />
-                </Link>
+                <a href="#contact" className="gap-2">
+                  联系我 <ArrowRight size={16} />
+                </a>
               </ShimmerButton>
-              <Link href="/creative" className="hm-btn-ghost">
-                <Sparkles size={16} />
-                互动版
-              </Link>
-              <a href="#contact" className="hm-btn-ghost">
-                <Mail size={16} />
-                联系我
-              </a>
             </motion.div>
 
             {/* 社交链接 */}

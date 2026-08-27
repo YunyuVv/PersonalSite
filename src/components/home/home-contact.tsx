@@ -2,17 +2,18 @@
 
 import { useState } from "react";
 import { Mail, Check } from "lucide-react";
-import profile from "@/data/profile";
+import { useSiteConfig } from "@/lib/site-config-context";
 import { Reveal } from "@/components/ui/reveal";
 import { SocialLinks } from "@/components/ui/social-links";
 import { ElectricBorder } from "@/components/reactbits/electric-border";
 
 export function HomeContact() {
+  const config = useSiteConfig();
   const [copied, setCopied] = useState(false);
 
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText(profile.email);
+      await navigator.clipboard.writeText(config.email);
       setCopied(true);
       setTimeout(() => setCopied(false), 1800);
     } catch {
@@ -26,7 +27,7 @@ export function HomeContact() {
         <span className="hm-eyebrow">联系 / Contact</span>
         <h2 className="hm-h2 mt-5">一起做点有意思的事？</h2>
         <p className="mt-4 text-[var(--text-secondary)] max-w-lg mx-auto">
-          无论合作、招聘还是单纯聊聊技术，欢迎随时来信。
+          无论商务合作、内容共创还是单纯想聊聊投资，欢迎随时来信。
         </p>
 
         <div className="mt-10 inline-block">
@@ -43,10 +44,10 @@ export function HomeContact() {
                   className="hm-btn-primary"
                 >
                   {copied ? <Check size={16} /> : <Mail size={16} />}
-                  {copied ? "已复制邮箱" : profile.email}
+                  {copied ? "已复制邮箱" : config.email}
                 </button>
                 <a
-                  href={`mailto:${profile.email}`}
+                  href={`mailto:${config.email}`}
                   className="hm-btn-ghost"
                 >
                   <Mail size={16} />

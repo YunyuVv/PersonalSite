@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import profile from "@/data/profile";
+import { getSiteConfig } from "@/lib/config";
 import { Footer } from "@/components/layout/footer";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -9,9 +9,11 @@ import { MBTISection } from "@/components/sections/mbti-section";
 import { HomeAbout } from "@/components/home/home-about";
 import { HomeContact } from "@/components/home/home-contact";
 
+const config = getSiteConfig();
+
 export const metadata: Metadata = {
-  title: `${profile.name} · ${profile.role}`,
-  description: profile.siteConfig.description,
+  title: `${config.name} · ${config.role}`,
+  description: config.siteConfig.description,
   alternates: { canonical: "/" },
 };
 

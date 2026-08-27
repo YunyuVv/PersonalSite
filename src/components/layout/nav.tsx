@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Moon, Sun, ArrowUpRight, Home } from "lucide-react";
+import { Menu, X, Moon, Sun, Home } from "lucide-react";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
 import { useTheme } from "next-themes";
 
@@ -92,22 +92,6 @@ export function Nav() {
                 </button>
               ))}
 
-              {/* 跨页互跳：非简历页时显示“简历”入口 */}
-              {!isResume && (
-                <Link
-                  href="/resume"
-                  className="px-4 py-2 text-sm font-medium rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-300 cursor-pointer"
-                >
-                  简历
-                </Link>
-              )}
-
-              <a
-                href="/creative"
-                className="px-4 py-2 text-sm font-medium rounded-full text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-300 cursor-pointer flex items-center gap-1"
-              >
-                互动版 <ArrowUpRight size={14} />
-              </a>
               <div className="w-px h-5 bg-[var(--divider)] mx-1" />
               <button
                 onClick={toggleTheme}
@@ -175,13 +159,6 @@ export function Nav() {
                   <X size={20} />
                 </button>
               </div>
-              <Link
-                href={isResume ? "/" : "/resume"}
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-base font-medium mb-1 bg-[var(--accent)] text-[var(--text-on-accent)]"
-              >
-                {isResume ? "返回首页 ↗" : "查看简历 ↗"}
-              </Link>
               {navItems.map((item, i) => (
                 <motion.button
                   key={item.id}
@@ -198,13 +175,6 @@ export function Nav() {
                   {item.label}
                 </motion.button>
               ))}
-              <a
-                href="/creative"
-                onClick={() => setMobileOpen(false)}
-                className="flex items-center justify-between w-full px-4 py-3 rounded-lg text-base font-medium mt-2 text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]"
-              >
-                互动版 ↗
-              </a>
             </motion.div>
           </motion.div>
         )}

@@ -1,26 +1,29 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import profile from "@/data/profile";
+import { getSiteConfig } from "@/lib/config";
+import { SiteConfigProvider } from "@/lib/site-config-context";
+
+const config = getSiteConfig();
 
 export const metadata: Metadata = {
-  metadataBase: new URL(profile.siteConfig.url),
-  title: profile.siteConfig.title,
-  description: profile.siteConfig.description,
+  metadataBase: new URL(config.siteConfig.url),
+  title: config.siteConfig.title,
+  description: config.siteConfig.description,
   openGraph: {
-    title: profile.siteConfig.title,
-    description: profile.siteConfig.description,
-    url: profile.siteConfig.url,
-    siteName: profile.name,
-    images: [{ url: profile.siteConfig.ogImage, width: 1200, height: 630 }],
+    title: config.siteConfig.title,
+    description: config.siteConfig.description,
+    url: config.siteConfig.url,
+    siteName: config.name,
+    images: [{ url: config.siteConfig.ogImage, width: 1200, height: 630 }],
     type: "website",
     locale: "zh_CN",
   },
   twitter: {
     card: "summary_large_image",
-    title: profile.siteConfig.title,
-    description: profile.siteConfig.description,
-    images: [profile.siteConfig.ogImage],
+    title: config.siteConfig.title,
+    description: config.siteConfig.description,
+    images: [config.siteConfig.ogImage],
   },
   robots: {
     index: true,
@@ -56,16 +59,11 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Person",
-              name: profile.name,
-              jobTitle: profile.role,
-              url: profile.siteConfig.url,
-              email: profile.email,
-              sameAs: [
-                profile.social.github,
-                profile.social.linkedin,
-                profile.social.juejin,
-                profile.social.zhihu,
-              ].filter(Boolean),
+              name: config.name,
+              jobTitle: config.role,
+              url: config.siteConfig.url,
+              email: config.email,
+              sameAs: Object.values(config.social).filter(Boolean),
             }),
           }}
         />
@@ -73,11 +71,11 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[var(--bg-primary)] text-[var(--text-primary)]">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <SiteConfigProvider value={config}>{children}</SiteConfigProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -1,9 +1,11 @@
+"use client";
+
 import { ArrowDown, Mail } from "lucide-react";
-import profile from "@/data/profile";
+import { useSiteConfig } from "@/lib/site-config-context";
 import { Reveal } from "@/components/ui/reveal";
 
 export function HeroSection() {
-  const p = profile;
+  const p = useSiteConfig();
 
   return (
     <Reveal className="md:col-span-4 bento-card p-8 md:p-10 flex flex-col justify-between min-h-[360px]">

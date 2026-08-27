@@ -1,75 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import profile from "@/data/profile";
-
-/* ---------------- 数据建模：把"我"拆成一张架构拓扑图 ---------------- */
-
-const socials = [
-  { name: "GitHub", url: profile.social.github },
-  { name: "LinkedIn", url: profile.social.linkedin },
-  { name: "掘金", url: profile.social.juejin },
-  { name: "知乎", url: profile.social.zhihu },
-  { name: "微信", url: profile.social.wechat },
-  { name: "网站", url: profile.social.website },
-].filter((s) => s.url && !s.url.includes("yourname") && s.url !== "https://mp.weixin.qq.com/");
-
-type Dir = "up" | "right" | "down" | "left";
-
-const GROUPS: {
-  id: string;
-  label: string;
-  dir: Dir;
-  leaves: { id: string; label: string; sub?: string; kind: string; data: unknown }[];
-}[] = [
-  {
-    id: "skills",
-    label: "技能",
-    dir: "up",
-    leaves: profile.skills.map((c) => ({
-      id: `skill-${c.name}`,
-      label: c.name,
-      kind: "skill",
-      data: c,
-    })),
-  },
-  {
-    id: "projects",
-    label: "项目",
-    dir: "right",
-    leaves: profile.projects.map((p) => ({
-      id: `proj-${p.id}`,
-      label: p.name,
-      sub: p.description,
-      kind: "project",
-      data: p,
-    })),
-  },
-  {
-    id: "experience",
-    label: "经历",
-    dir: "down",
-    leaves: profile.experiences.map((e, i) => ({
-      id: `exp-${i}`,
-      label: e.company,
-      sub: e.role,
-      kind: "experience",
-      data: e,
-    })),
-  },
-  {
-    id: "contact",
-    label: "联系",
-    dir: "left",
-    leaves: socials.map((s) => ({
-      id: `soc-${s.name}`,
-      label: s.name,
-      sub: s.url,
-      kind: "social",
-      data: s,
-    })),
-  },
-];
+import { useSiteConfig } from "@/lib/site-config-context";
 
 /* ---------------- 布局（径向：中心 + 四向模块 + 分支） ---------------- */
 
@@ -79,6 +11,8 @@ const CX = 600;
 const CY = 410;
 const R1 = 175; // 模块距中心
 const R2 = 105; // 叶子距模块
+
+type Dir = "up" | "right" | "down" | "left";
 
 interface Pos {
   x: number;
@@ -124,15 +58,82 @@ interface GraphNode {
   payload?: { kind: string; data: unknown };
 }
 
-function buildGraph(): { nodes: GraphNode[]; edges: [string, string][] } {
+function buildGraph(config: ReturnType<typeof useSiteConfig>): {
+  nodes: GraphNode[];
+  edges: [string, string][];
+} {
+  const socials = [
+    { name: "微信", url: config.social.wechat },
+    { name: "小红书", url: config.social.xiaohongshu },
+    { name: "微博", url: config.social.weibo },
+  ].filter(
+    (s) =>
+      s.url && !s.url.includes("yourname") && s.url !== "https://mp.weixin.qq.com/"
+  );
+
+  const GROUPS: {
+    id: string;
+    label: string;
+    dir: Dir;
+    leaves: { id: string; label: string; sub?: string; kind: string; data: unknown }[];
+  }[] = [
+    {
+      id: "skills",
+      label: "技能",
+      dir: "up",
+      leaves: config.skills.map((c) => ({
+        id: `skill-${c.name}`,
+        label: c.name,
+        kind: "skill",
+        data: c,
+      })),
+    },
+    {
+      id: "projects",
+      label: "项目",
+      dir: "right",
+      leaves: config.projects.map((p) => ({
+        id: `proj-${p.id}`,
+        label: p.name,
+        sub: p.description,
+        kind: "project",
+        data: p,
+      })),
+    },
+    {
+      id: "experience",
+      label: "经历",
+      dir: "down",
+      leaves: config.experiences.map((e, i) => ({
+        id: `exp-${i}`,
+        label: e.company,
+        sub: e.role,
+        kind: "experience",
+        data: e,
+      })),
+    },
+    {
+      id: "contact",
+      label: "联系",
+      dir: "left",
+      leaves: socials.map((s) => ({
+        id: `soc-${s.name}`,
+        label: s.name,
+        sub: s.url,
+        kind: "social",
+        data: s,
+      })),
+    },
+  ];
+
   const nodes: GraphNode[] = [];
   const edges: [string, string][] = [];
 
   nodes.push({
     id: "me",
     kind: "center",
-    label: profile.name,
-    sub: profile.role,
+    label: config.name,
+    sub: config.role,
     pos: { x: CX, y: CY },
   });
 
@@ -181,12 +182,20 @@ function SkillBars({ cat }: { cat: { name: string; items: { name: string; level:
   );
 }
 
-function Detail({ node }: { node: GraphNode | undefined }) {
+function Detail({
+  node,
+  config,
+  nodes,
+}: {
+  node: GraphNode | undefined;
+  config: ReturnType<typeof useSiteConfig>;
+  nodes: GraphNode[];
+}) {
   if (!node) {
     return (
       <div className="text-slate-500 text-sm leading-relaxed">
         <p className="text-slate-400">// 悬停或点击任意节点</p>
-        <p className="mt-2">查看「{profile.name}」的系统拓扑——</p>
+        <p className="mt-2">查看「{config.name}」的系统拓扑——</p>
         <p>技能、项目、经历与联系，皆由此人连接。</p>
       </div>
     );
@@ -195,26 +204,26 @@ function Detail({ node }: { node: GraphNode | undefined }) {
   if (node.kind === "center") {
     return (
       <div className="space-y-3">
-        <h3 className="text-xl text-white font-semibold">{profile.name}</h3>
-        <p className="text-sky-300 text-sm">{profile.role} · {profile.location}</p>
-        <p className="text-slate-400 text-xs italic">“{profile.tagline}”</p>
-        <p className="text-sm text-slate-300/90 leading-relaxed">{profile.bio}</p>
+        <h3 className="text-xl text-white font-semibold">{config.name}</h3>
+        <p className="text-sky-300 text-sm">{config.role} · {config.location}</p>
+        <p className="text-slate-400 text-xs italic">“{config.tagline}”</p>
+        <p className="text-sm text-slate-300/90 leading-relaxed">{config.bio}</p>
         <span className="inline-block mt-1 px-2 py-0.5 border border-emerald-400/60 text-emerald-300 text-[11px]">
-          ● {profile.siteConfig ? "开放新机会" : ""}
+          ● {config.statusBadge || "开放新机会"}
         </span>
       </div>
     );
   }
 
   if (node.kind === "group") {
-    const g = GROUPS.find((x) => x.id === node.id)!;
+    const children = nodes.filter((n) => n.parent === node.id);
     return (
       <div className="space-y-2">
         <h3 className="text-lg text-white">{node.label} 模块</h3>
-        <p className="text-slate-400 text-xs">包含 {g.leaves.length} 个节点，悬停查看明细。</p>
+        <p className="text-slate-400 text-xs">包含 {children.length} 个节点，悬停查看明细。</p>
         <ul className="text-sm text-slate-300/90 space-y-1 mt-2">
-          {g.leaves.map((l) => (
-            <li key={l.id} className="border-l-2 border-slate-600 pl-2">{l.label}</li>
+          {children.map((c) => (
+            <li key={c.id} className="border-l-2 border-slate-600 pl-2">{c.label}</li>
           ))}
         </ul>
       </div>
@@ -276,7 +285,8 @@ function Detail({ node }: { node: GraphNode | undefined }) {
 /* ---------------- 主组件 ---------------- */
 
 export default function MapPage() {
-  const { nodes, edges } = useMemo(buildGraph, []);
+  const config = useSiteConfig();
+  const { nodes, edges } = useMemo(() => buildGraph(config), [config]);
   const [activeId, setActiveId] = useState<string | null>(null);
   const [pinned, setPinned] = useState<string | null>(null);
 
@@ -338,8 +348,6 @@ export default function MapPage() {
         <span className="text-sm tracking-widest text-sky-300/80">~/ SYS-MAP</span>
         <nav className="flex gap-4 text-xs">
           <a href="/" className="hover:text-white">HOME</a>
-          <a href="/resume" className="hover:text-white">RESUME</a>
-          <a href="/creative" className="hover:text-white">CREATIVE</a>
           <a href="/map" className="text-sky-300">MAP</a>
         </nav>
       </header>
@@ -349,7 +357,7 @@ export default function MapPage() {
           以架构作画
         </h1>
         <p className="mt-1 text-center text-xs text-slate-400 sm:text-sm">
-          {profile.name} · {profile.role} 的系统性自画像 — 悬停 / 点击节点展开
+          {config.name} · {config.role} 的系统性自画像 — 悬停 / 点击节点展开
         </p>
       </div>
 
@@ -436,7 +444,7 @@ export default function MapPage() {
           className="w-full shrink-0 rounded-lg border border-slate-700/60 bg-slate-900/70 p-5 backdrop-blur lg:w-80"
           onClick={(e) => e.stopPropagation()}
         >
-          <Detail node={activeDetail} />
+          <Detail node={activeDetail} config={config} nodes={nodes} />
         </aside>
       </div>
     </main>

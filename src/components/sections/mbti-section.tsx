@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, EyeOff } from "lucide-react";
-import profile from "@/data/profile";
+import { useSiteConfig } from "@/lib/site-config-context";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 interface MBTISectionProps {
@@ -16,8 +16,7 @@ interface MBTISectionProps {
   className?: string;
 }
 
-/** MBTI 人物插画路径，统一存放于 public/images */
-const MBTI_IMAGE = "/images/mbti-intp.png";
+// MBTI 人物插画路径，统一存放于 public/mbti/{type}.png
 
 const STAGGER = {
   hidden: { opacity: 0 },
@@ -33,7 +32,8 @@ const ITEM_FADE = {
 };
 
 export function MBTISection({ variant = "hero", className = "" }: MBTISectionProps) {
-  const { mbti } = profile;
+  const { mbti } = useSiteConfig();
+  const mbtiImage = `/mbti/${mbti.type.toLowerCase()}.png`;
   const reduced = useReducedMotion();
 
   /* ---------- 维度条 ---------- */
@@ -156,7 +156,7 @@ export function MBTISection({ variant = "hero", className = "" }: MBTISectionPro
                   aria-hidden
                 />
                 <Image
-                  src={MBTI_IMAGE}
+                  src={mbtiImage}
                   alt={`${mbti.type} ${mbti.name} 人物插画`}
                   fill
                   className="object-contain relative z-10"
@@ -248,7 +248,7 @@ export function MBTISection({ variant = "hero", className = "" }: MBTISectionPro
             aria-hidden
           />
           <Image
-            src={MBTI_IMAGE}
+            src={mbtiImage}
             alt={`${mbti.type} 插画`}
             fill
             className="object-contain relative z-10"
