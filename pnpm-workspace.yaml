@@ -4,3 +4,12 @@ packages:
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
+
+# 构建期需要执行 install 脚本的依赖（pnpm v10+ 必须从 workspace 配置读取，不再读 package.json 的 pnpm 字段）
+onlyBuiltDependencies:
+  - esbuild
+  - workerd
+
+# 依赖覆盖（pnpm v10+ workspace 项目必须放在此处）
+overrides:
+  balanced-match: 4.0.4
