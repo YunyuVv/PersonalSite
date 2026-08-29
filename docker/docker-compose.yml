@@ -13,5 +13,5 @@ services:
     environment:
       - PORT=3000
       # 后台登录口令，请改为强随机值；后台访问 /admin 时携带此 Token
-      - ADMIN_TOKEN=change-me
+      - ADMIN_TOKEN=qingzheng_password
     restart: unless-stopped

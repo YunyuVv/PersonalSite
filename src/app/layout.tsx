@@ -3,39 +3,48 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { getSiteConfig } from "@/lib/config";
 import { SiteConfigProvider } from "@/lib/site-config-context";
+import { ToastProvider } from "@/components/ui/toast";
 
-const config = getSiteConfig();
+// 后台可在运行时修改配置并即时生效，故全站强制动态渲染。
+// 注意：静态导出（output: export）不支持 force-dynamic，
+// 由 scripts/build-static.mjs 在构建静态产物时临时替换为 force-static，构建后还原。
+export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(config.siteConfig.url),
-  title: config.siteConfig.title,
-  description: config.siteConfig.description,
-  openGraph: {
+export function generateMetadata(): Metadata {
+  const config = getSiteConfig();
+  return {
+    metadataBase: new URL(config.siteConfig.url),
     title: config.siteConfig.title,
     description: config.siteConfig.description,
-    url: config.siteConfig.url,
-    siteName: config.name,
-    images: [{ url: config.siteConfig.ogImage, width: 1200, height: 630 }],
-    type: "website",
-    locale: "zh_CN",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: config.siteConfig.title,
-    description: config.siteConfig.description,
-    images: [config.siteConfig.ogImage],
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+    openGraph: {
+      title: config.siteConfig.title,
+      description: config.siteConfig.description,
+      url: config.siteConfig.url,
+      siteName: config.name,
+      images: [{ url: config.siteConfig.ogImage, width: 1200, height: 630 }],
+      type: "website",
+      locale: "zh_CN",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: config.siteConfig.title,
+      description: config.siteConfig.description,
+      images: [config.siteConfig.ogImage],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 每次渲染时重新读取，保证后台改配置后前台即时生效
+  const config = getSiteConfig();
   return (
     <html lang="zh-CN" className="h-full antialiased" suppressHydrationWarning>
       <head>
@@ -75,7 +84,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SiteConfigProvider value={config}>{children}</SiteConfigProvider>
+          <ToastProvider>
+            <SiteConfigProvider value={config}>{children}</SiteConfigProvider>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

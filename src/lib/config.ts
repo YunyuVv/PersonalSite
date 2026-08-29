@@ -240,23 +240,57 @@ const DEFAULT_CONFIG: SiteConfig = {
 
 const CONFIG_PATH = path.join(process.cwd(), "data", "config.json");
 
-let cache: SiteConfig | null = null;
-
-export function getSiteConfig(): SiteConfig {
-  if (cache) return cache;
-  try {
-    const raw = fs.readFileSync(CONFIG_PATH, "utf-8");
-    cache = JSON.parse(raw) as SiteConfig;
-  } catch {
-    cache = DEFAULT_CONFIG;
-    saveSiteConfig(cache);
-  }
-  return cache;
+interface CacheEntry {
+  mtimeMs: number;
+  data: SiteConfig;
 }
 
-// 写穿透：同时落盘 + 更新内存缓存，保存后即时生效，无需重启
+// 缓存挂在 globalThis 上，而非模块级变量。
+// 原因：Next.js 下 Route Handler 与 Server Component 可能分属不同的模块实例，
+// config.ts 会被加载多次，模块级变量会产生多份互不同步的 cache——
+// 表现为「后台保存成功、API 读到新值，但页面渲染仍是旧值」。
+// globalThis 是进程级单例，可保证同一进程内所有模块实例共享同一份缓存。
+const globalCache = globalThis as unknown as {
+  __siteConfigCache?: CacheEntry;
+};
+
+export function getSiteConfig(): SiteConfig {
+  try {
+    const stat = fs.statSync(CONFIG_PATH);
+    const cached = globalCache.__siteConfigCache;
+    // 命中缓存的前提：文件未被改动（以 mtime 为准）
+    if (cached && cached.mtimeMs === stat.mtimeMs) {
+      return cached.data;
+    }
+    const raw = fs.readFileSync(CONFIG_PATH, "utf-8");
+    const data = JSON.parse(raw) as SiteConfig;
+    globalCache.__siteConfigCache = { mtimeMs: stat.mtimeMs, data };
+    return data;
+  } catch (err) {
+    // 只有「文件确实不存在」时才写入默认种子（首次初始化）。
+    // 其余情况（JSON 解析失败、读到半截内容、权限问题等）一律只读不写——
+    // 否则一旦读取失败就会用默认值回写覆盖用户已保存的配置，造成不可逆的数据丢失。
+    if ((err as NodeJS.ErrnoException)?.code === "ENOENT") {
+      saveSiteConfig(DEFAULT_CONFIG);
+      return DEFAULT_CONFIG;
+    }
+    console.error("[config] 读取 data/config.json 失败，本次回退到默认配置（未回写文件）：", err);
+    return DEFAULT_CONFIG;
+  }
+}
+
+// 写穿透：落盘 + 立即刷新缓存，保存后即时生效，无需重启。
+// 同时以 mtime 为校验依据，外部直接编辑 config.json（如 Docker 挂载目录改配置）也能被感知。
 export function saveSiteConfig(cfg: SiteConfig): void {
-  cache = cfg;
   fs.mkdirSync(path.dirname(CONFIG_PATH), { recursive: true });
-  fs.writeFileSync(CONFIG_PATH, JSON.stringify(cfg, null, 2), "utf-8");
+  // 原子写入：先写临时文件再 rename，避免并发读者读到被截断的半截内容
+  const tmpPath = `${CONFIG_PATH}.${process.pid}.tmp`;
+  fs.writeFileSync(tmpPath, JSON.stringify(cfg, null, 2), "utf-8");
+  fs.renameSync(tmpPath, CONFIG_PATH);
+  try {
+    const stat = fs.statSync(CONFIG_PATH);
+    globalCache.__siteConfigCache = { mtimeMs: stat.mtimeMs, data: cfg };
+  } catch {
+    globalCache.__siteConfigCache = { mtimeMs: Date.now(), data: cfg };
+  }
 }

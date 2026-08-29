@@ -9,13 +9,18 @@ import { MBTISection } from "@/components/sections/mbti-section";
 import { HomeAbout } from "@/components/home/home-about";
 import { HomeContact } from "@/components/home/home-contact";
 
-const config = getSiteConfig();
+// 强制动态渲染：后台修改配置后无需重新构建即可生效。
+// 静态导出时由 scripts/build-static.mjs 临时替换为 force-static。
+export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: `${config.name} · ${config.role}`,
-  description: config.siteConfig.description,
-  alternates: { canonical: "/" },
-};
+export function generateMetadata(): Metadata {
+  const config = getSiteConfig();
+  return {
+    title: `${config.name} · ${config.role}`,
+    description: config.siteConfig.description,
+    alternates: { canonical: "/" },
+  };
+}
 
 export default function HomePage() {
   return (

@@ -12,6 +12,7 @@ const PLATFORM_BADGE: Record<string, { label: string; color: string }> = {
   xiaohongshu: { label: "小红书", color: "#FF2442" },
   wechat: { label: "公众号", color: "#07C160" },
   weibo: { label: "微博", color: "#E6162D" },
+  shipinhao: { label: "视频号", color: "#07C160" },
 };
 
 /** 生成渐变占位封面（与 VideoCard 风格一致）。
