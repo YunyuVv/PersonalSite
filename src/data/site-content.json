@@ -1,6 +1,6 @@
 {
   "profile": {
-    "name": "YunYu",
+    "name": "YunYu222",
     "role": "全栈工程师",
     "tagline": "以代码写诗，以架构作画",
     "location": "深圳",
@@ -62,47 +62,110 @@
       {
         "name": "语言",
         "items": [
-          { "name": "TypeScript", "level": 5 },
-          { "name": "JavaScript", "level": 5 },
-          { "name": "Python", "level": 3 },
-          { "name": "Go", "level": 2 }
+          {
+            "name": "TypeScript",
+            "level": 5
+          },
+          {
+            "name": "JavaScript",
+            "level": 5
+          },
+          {
+            "name": "Python",
+            "level": 3
+          },
+          {
+            "name": "Go",
+            "level": 2
+          }
         ]
       },
       {
         "name": "前端",
         "items": [
-          { "name": "React", "level": 5 },
-          { "name": "Next.js", "level": 5 },
-          { "name": "Vue", "level": 3 },
-          { "name": "Tailwind CSS", "level": 5 },
-          { "name": "Framer Motion", "level": 4 }
+          {
+            "name": "React",
+            "level": 5
+          },
+          {
+            "name": "Next.js",
+            "level": 5
+          },
+          {
+            "name": "Vue",
+            "level": 3
+          },
+          {
+            "name": "Tailwind CSS",
+            "level": 5
+          },
+          {
+            "name": "Framer Motion",
+            "level": 4
+          }
         ]
       },
       {
         "name": "后端",
         "items": [
-          { "name": "Node.js", "level": 5 },
-          { "name": "Express/NestJS", "level": 4 },
-          { "name": "PostgreSQL", "level": 4 },
-          { "name": "Redis", "level": 3 }
+          {
+            "name": "Node.js",
+            "level": 5
+          },
+          {
+            "name": "Express/NestJS",
+            "level": 4
+          },
+          {
+            "name": "PostgreSQL",
+            "level": 4
+          },
+          {
+            "name": "Redis",
+            "level": 3
+          }
         ]
       },
       {
         "name": "基础设施",
         "items": [
-          { "name": "Docker", "level": 4 },
-          { "name": "Kubernetes", "level": 3 },
-          { "name": "AWS/腾讯云", "level": 4 },
-          { "name": "CI/CD", "level": 5 }
+          {
+            "name": "Docker",
+            "level": 4
+          },
+          {
+            "name": "Kubernetes",
+            "level": 3
+          },
+          {
+            "name": "AWS/腾讯云",
+            "level": 4
+          },
+          {
+            "name": "CI/CD",
+            "level": 5
+          }
         ]
       },
       {
         "name": "工具",
         "items": [
-          { "name": "Git", "level": 5 },
-          { "name": "Figma", "level": 3 },
-          { "name": "VS Code", "level": 5 },
-          { "name": "Linux", "level": 4 }
+          {
+            "name": "Git",
+            "level": 5
+          },
+          {
+            "name": "Figma",
+            "level": 3
+          },
+          {
+            "name": "VS Code",
+            "level": 5
+          },
+          {
+            "name": "Linux",
+            "level": 4
+          }
         ]
       }
     ],
@@ -111,7 +174,12 @@
         "id": "micro-frontend-platform",
         "name": "微前端治理平台",
         "description": "一站式微前端应用管理、监控与性能分析平台",
-        "tags": ["React", "TypeScript", "Qiankun", "WebSocket"],
+        "tags": [
+          "React",
+          "TypeScript",
+          "Qiankun",
+          "WebSocket"
+        ],
         "image": "/images/projects/proj-1.webp",
         "demoUrl": "https://micro.example.com",
         "githubUrl": "https://github.com/yourname/micro-frontend-platform"
@@ -120,7 +188,12 @@
         "id": "devops-dashboard",
         "name": "DevOps 可视化仪表盘",
         "description": "实时 CI/CD 流水线监控与告警面板",
-        "tags": ["Next.js", "D3.js", "WebSocket", "Docker"],
+        "tags": [
+          "Next.js",
+          "D3.js",
+          "WebSocket",
+          "Docker"
+        ],
         "image": "/images/projects/proj-2.webp",
         "demoUrl": "https://dashboard.example.com",
         "githubUrl": "https://github.com/yourname/devops-dashboard"
@@ -129,7 +202,11 @@
         "id": "open-source-utils",
         "name": "xx-utils 工具库",
         "description": "轻量级前端工具函数集合，2k+ 周下载量",
-        "tags": ["TypeScript", "Rollup", "Jest"],
+        "tags": [
+          "TypeScript",
+          "Rollup",
+          "Jest"
+        ],
         "image": "/images/projects/proj-3.webp",
         "githubUrl": "https://github.com/yourname/xx-utils"
       },
@@ -137,7 +214,12 @@
         "id": "ai-chat-app",
         "name": "AI 对话平台",
         "description": "基于 LLM 的多轮对话应用，支持流式响应",
-        "tags": ["Next.js", "OpenAI", "Edge Runtime", "PostgreSQL"],
+        "tags": [
+          "Next.js",
+          "OpenAI",
+          "Edge Runtime",
+          "PostgreSQL"
+        ],
         "image": "/images/projects/proj-4.webp",
         "demoUrl": "https://chat.example.com",
         "githubUrl": "https://github.com/yourname/ai-chat-app"
@@ -146,7 +228,12 @@
         "id": "ecommerce-admin",
         "name": "电商后台管理系统",
         "description": "全栈电商管理后台，RBAC 权限 + 数据大屏",
-        "tags": ["React", "Node.js", "Ant Design", "MongoDB"],
+        "tags": [
+          "React",
+          "Node.js",
+          "Ant Design",
+          "MongoDB"
+        ],
         "image": "/images/projects/proj-5.webp",
         "githubUrl": "https://github.com/yourname/ecommerce-admin"
       }
@@ -157,13 +244,48 @@
       "nameEn": "The Logician",
       "description": "安静灵活的思考者，对理论和抽象想法充满热情。喜欢用逻辑分析一切事物的本质，享受独立解决问题的过程。",
       "dimensions": [
-        { "left": "I", "right": "E", "leftName": "内向", "rightName": "外向", "score": 22 },
-        { "left": "N", "right": "S", "leftName": "直觉", "rightName": "感觉", "score": 18 },
-        { "left": "T", "right": "F", "leftName": "思考", "rightName": "情感", "score": 15 },
-        { "left": "P", "right": "J", "leftName": "感知", "rightName": "判断", "score": 28 }
+        {
+          "left": "I",
+          "right": "E",
+          "leftName": "内向",
+          "rightName": "外向",
+          "score": 22
+        },
+        {
+          "left": "N",
+          "right": "S",
+          "leftName": "直觉",
+          "rightName": "感觉",
+          "score": 18
+        },
+        {
+          "left": "T",
+          "right": "F",
+          "leftName": "思考",
+          "rightName": "情感",
+          "score": 15
+        },
+        {
+          "left": "P",
+          "right": "J",
+          "leftName": "感知",
+          "rightName": "判断",
+          "score": 28
+        }
       ],
-      "strengths": ["逻辑分析", "创造性思维", "客观公正", "适应力强", "求知欲旺盛"],
-      "weaknesses": ["过度分析", "忽视情感", "难以决策", "容易分心"]
+      "strengths": [
+        "逻辑分析",
+        "创造性思维",
+        "客观公正",
+        "适应力强",
+        "求知欲旺盛"
+      ],
+      "weaknesses": [
+        "过度分析",
+        "忽视情感",
+        "难以决策",
+        "容易分心"
+      ]
     },
     "siteConfig": {
       "title": "YunYu | 全栈工程师",
@@ -175,8 +297,15 @@
   },
   "homepage": {
     "philosophy": "我相信好的工具应该安静地解决问题——代码、产品、体验，皆如此。 真棒",
-    "focus": ["语言", "前端"],
+    "focus": [
+      "语言",
+      "前端"
+    ],
     "statusBadge": "开放新机会",
-    "featuredProjectIds": ["micro-frontend-platform", "devops-dashboard", "open-source-utils"]
+    "featuredProjectIds": [
+      "micro-frontend-platform",
+      "devops-dashboard",
+      "open-source-utils"
+    ]
   }
 }
