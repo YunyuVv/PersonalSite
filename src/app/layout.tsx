@@ -88,6 +88,7 @@ export default function RootLayout({
             <SiteConfigProvider value={config}>{children}</SiteConfigProvider>
           </ToastProvider>
         </ThemeProvider>
+
       </body>
     </html>
   );
