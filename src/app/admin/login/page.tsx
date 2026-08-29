@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -35,17 +37,26 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-neutral-50 px-6">
+    <div className="flex min-h-screen items-center justify-center bg-[var(--bg-primary)] px-6">
+      <div className="absolute right-4 top-4 flex items-center gap-2">
+        <Link
+          href="/"
+          className="rounded-md border border-[var(--divider)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]"
+        >
+          返回首页
+        </Link>
+        <ThemeToggle />
+      </div>
       <form
         onSubmit={submit}
-        className="w-full max-w-sm rounded-lg border border-neutral-200 bg-white p-6 shadow-sm"
+        className="w-full max-w-sm rounded-lg border border-[var(--divider)] bg-[var(--bg-card)] p-6 shadow-sm"
       >
-        <h1 className="text-lg font-semibold text-neutral-900">后台登录</h1>
-        <p className="mt-1 text-sm text-neutral-500">
+        <h1 className="text-lg font-semibold text-[var(--text-primary)]">后台登录</h1>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">
           请输入管理口令以进入站点后台
         </p>
 
-        <label className="mt-5 block text-sm font-medium text-neutral-700">
+        <label className="mt-5 block text-sm font-medium text-[var(--text-primary)]">
           访问口令（ADMIN_KEY）
         </label>
         <input
@@ -53,7 +64,7 @@ export default function AdminLoginPage() {
           autoFocus
           value={key}
           onChange={(e) => setKey(e.target.value)}
-          className="mt-2 w-full rounded-md border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-500"
+          className="mt-2 w-full rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
           placeholder="输入 ADMIN_KEY"
         />
 
@@ -64,7 +75,7 @@ export default function AdminLoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-5 w-full rounded-md bg-neutral-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+          className="mt-5 w-full rounded-md bg-[var(--accent)] px-4 py-2 text-sm font-medium text-[var(--text-on-accent)] disabled:opacity-50"
         >
           {loading ? "登录中…" : "登录"}
         </button>

@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Profile } from "@/types/profile";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 type HomepageFields = {
   philosophy: string;
@@ -104,22 +106,31 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
   const { profile, homepage } = data;
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900">
-      <header className="border-b border-neutral-200 bg-white px-6 py-4">
+    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
+      <header className="border-b border-[var(--divider)] bg-[var(--bg-card)] px-6 py-4">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <div>
             <h1 className="text-lg font-semibold">站点后台管理</h1>
-            <p className="text-sm text-neutral-500">
+            <p className="text-sm text-[var(--text-secondary)]">
               修改后保存到 GitHub，触发 Cloudflare 自动重建（约 1–3 分钟生效）
             </p>
           </div>
-          <button
-            onClick={logout}
-            disabled={loggingOut}
-            className="rounded-md border border-neutral-300 px-3 py-1.5 text-sm text-neutral-600 hover:bg-neutral-100 disabled:opacity-50"
-          >
-            {loggingOut ? "退出中…" : "退出登录"}
-          </button>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/"
+              className="rounded-md border border-[var(--divider)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-muted)]"
+            >
+              返回首页
+            </Link>
+            <ThemeToggle />
+            <button
+              onClick={logout}
+              disabled={loggingOut}
+              className="rounded-md border border-[var(--divider)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--bg-muted)] disabled:opacity-50"
+            >
+              {loggingOut ? "退出中…" : "退出登录"}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -132,8 +143,8 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
               onClick={() => setTab(t.key)}
               className={`rounded-full px-4 py-1.5 text-sm transition ${
                 tab === t.key
-                  ? "bg-neutral-900 text-white"
-                  : "bg-white text-neutral-600 border border-neutral-200 hover:bg-neutral-100"
+                  ? "bg-[var(--accent)] text-[var(--text-on-accent)]"
+                  : "bg-[var(--bg-card)] text-[var(--text-secondary)] border border-[var(--divider)] hover:bg-[var(--bg-muted)]"
               }`}
             >
               {t.label}
@@ -142,7 +153,7 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
         </div>
 
         {/* 表单区 */}
-        <div className="rounded-lg border border-neutral-200 bg-white p-5">
+        <div className="rounded-lg border border-[var(--divider)] bg-[var(--bg-card)] p-5">
           {tab === "basic" && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label="姓名" value={profile.name} onChange={(v) => setProfile({ name: v })} />
@@ -199,11 +210,11 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
               {profile.projects.map((p, i) => {
                 const featured = homepage.featuredProjectIds.includes(p.id);
                 return (
-                  <div key={p.id} className="rounded-md border border-neutral-200 p-3">
+                  <div key={p.id} className="rounded-md border border-[var(--divider)] p-3">
                     <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm font-medium">项目 {i + 1}（{p.id}）</span>
                       <div className="flex items-center gap-3">
-                        <label className="flex items-center gap-1.5 text-sm text-neutral-600">
+                        <label className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)]">
                           <input
                             type="checkbox"
                             checked={featured}
@@ -257,7 +268,7 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
                     ],
                   })
                 }
-                className="self-start rounded-md border border-neutral-300 px-3 py-1.5 text-sm hover:bg-neutral-100"
+                className="self-start rounded-md border border-[var(--divider)] px-3 py-1.5 text-sm hover:bg-[var(--bg-muted)]"
               >
                 + 新增项目
               </button>
@@ -283,7 +294,7 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
           <button
             onClick={confirmSave}
             disabled={saving}
-            className="rounded-md bg-neutral-900 px-5 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="rounded-md bg-[var(--accent)] px-5 py-2 text-sm font-medium text-[var(--text-on-accent)] disabled:opacity-50"
           >
             {saving ? "保存中…" : "保存到 GitHub"}
           </button>
@@ -332,11 +343,11 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-neutral-700">{label}</span>
+      <span className="mb-1 block text-sm font-medium text-[var(--text-primary)]">{label}</span>
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-500"
+        className="w-full rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
       />
     </label>
   );
@@ -355,12 +366,12 @@ function TextArea({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-neutral-700">{label}</span>
+      <span className="mb-1 block text-sm font-medium text-[var(--text-primary)]">{label}</span>
       <textarea
         value={value}
         rows={rows}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-md border border-neutral-300 px-3 py-2 text-sm outline-none focus:border-neutral-500"
+        className="w-full rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
       />
     </label>
   );

@@ -5,11 +5,12 @@ import { motion } from "framer-motion";
 import { Brain, Sparkles, EyeOff } from "lucide-react";
 import profile from "@/data/profile";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
+import { MBTICard } from "./mbti-card";
 
 interface MBTISectionProps {
   /**
    * 展示变体：
-   * - `"hero"` 首页独立区块（全宽，三栏布局含插画）
+   * - `"hero"` 首页独立区块（使用 MBTICard 卡片组件）
    * - `"bento"` 简历页 bento 卡片（适配 grid 布局，含小插画）
    */
   variant?: "hero" | "bento";
@@ -18,19 +19,6 @@ interface MBTISectionProps {
 
 /** MBTI 人物插画路径，统一存放于 public/mbti/{type}.png */
 const mbtiImageOf = (type: string) => `/mbti/${type.toLowerCase()}.png`;
-
-const STAGGER = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.08, delayChildren: 0.15 },
-  },
-};
-
-const ITEM_FADE = {
-  hidden: { opacity: 0, y: 12 },
-  show: { opacity: 1, y: 0 },
-};
 
 export function MBTISection({ variant = "hero", className = "" }: MBTISectionProps) {
   const { mbti } = profile;
@@ -129,85 +117,11 @@ export function MBTISection({ variant = "hero", className = "" }: MBTISectionPro
   /* =================== HERO 变体 =================== */
   if (variant === "hero") {
     return (
-      <motion.section
-        id="mbti"
-        className={`hm-section hm-hairline ${className}`}
-        variants={STAGGER}
-        initial={reduced ? undefined : "hidden"}
-        whileInView={reduced ? undefined : "show"}
-        viewport={{ once: true, margin: "-80px" }}
-      >
+      <section id="mbti" className={`hm-section hm-hairline ${className}`}>
         <div className="mx-auto max-w-6xl px-5 sm:px-8">
-          <motion.span className="hm-eyebrow" variants={ITEM_FADE}>
-            <Brain size={14} />
-            性格 / MBTI
-          </motion.span>
-
-          <div className="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-            {/* 左：人物插画 */}
-            <motion.div
-              className="lg:col-span-4 flex justify-center lg:justify-start"
-              variants={ITEM_FADE}
-            >
-              <div className="relative w-56 h-56 sm:w-64 sm:h-64 lg:w-72 lg:h-72">
-                {/* 底部光晕装饰 */}
-                <div
-                  className="absolute inset-0 rounded-full blur-3xl opacity-20 dark:opacity-30"
-                  style={{ background: "var(--accent)" }}
-                  aria-hidden
-                />
-                <Image
-                  src={mbtiImage}
-                  alt={`${mbti.type} ${mbti.name} 人物插画`}
-                  fill
-                  className="object-contain relative z-10"
-                  sizes="(max-width: 640px) 224px, (max-width: 1024px) 256px, 288px"
-                  priority={false}
-                />
-              </div>
-            </motion.div>
-
-            {/* 中：类型信息 + 标签 */}
-            <motion.div
-              className="lg:col-span-4 flex flex-col items-start"
-              variants={ITEM_FADE}
-            >
-              <div className="flex items-baseline gap-3">
-                <span className="font-display font-bold text-5xl sm:text-6xl tracking-tight text-[var(--text-primary)]">
-                  {mbti.type}
-                </span>
-                <span className="text-lg text-[var(--text-secondary)] font-medium">
-                  {mbti.name}
-                </span>
-              </div>
-              <p className="mt-1 text-sm text-[var(--text-muted)] font-mono">
-                {mbti.nameEn}
-              </p>
-              <p className="mt-5 text-[var(--text-secondary)] leading-relaxed">
-                {mbti.description}
-              </p>
-
-              <div className="mt-6 space-y-4 w-full">
-                <TagList
-                  items={mbti.strengths}
-                  icon={<Sparkles size={13} className="text-[var(--accent)]" />}
-                  tone="strength"
-                />
-                <TagList
-                  items={mbti.weaknesses}
-                  icon={<EyeOff size={13} className="text-[var(--text-muted)]" />}
-                  tone="weakness"
-                />
-              </div>
-            </motion.div>
-
-            {/* 右：维度条 */}
-            <motion.div className="lg:col-span-4" variants={ITEM_FADE}>
-              <DimensionBars />
-            </motion.div>
-          </div>
+          <MBTICard />
         </div>
-      </motion.section>
+      </section>
     );
   }
 

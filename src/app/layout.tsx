@@ -7,6 +7,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(profile.siteConfig.url),
   title: profile.siteConfig.title,
   description: profile.siteConfig.description,
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/favicon.ico",
+    apple: "/apple-icon.png",
+  },
   openGraph: {
     title: profile.siteConfig.title,
     description: profile.siteConfig.description,
