@@ -1,0 +1,182 @@
+{
+  "profile": {
+    "name": "YunYu",
+    "role": "全栈工程师",
+    "tagline": "以代码写诗，以架构作画",
+    "location": "深圳",
+    "email": "hello@example.com",
+    "avatar": "/images/avatar.jpg",
+    "bio": "我是一名在 Web 开发领域深耕五年的全栈工程师，专注于 React 生态与 Node.js 后端。\n\n我相信好的代码和好的设计一样，应该让人感到舒适。曾在创业公司从零搭建过日活百万级产品的技术架构，也热爱在开源社区贡献和分享。\n\n技术之外，是个国风爱好者，喜欢书法和水墨画——这也是这个页面的灵感来源。",
+    "social": {
+      "github": "https://github.com/YunyuVv",
+      "linkedin": "https://linkedin.com/in/yourname",
+      "juejin": "https://juejin.cn/user/yourname",
+      "zhihu": "https://zhihu.com/people/yourname",
+      "wechat": "https://mp.weixin.qq.com/",
+      "website": "https://yunyu.ideaflow.top/"
+    },
+    "experiences": [
+      {
+        "company": "星辰科技",
+        "role": "高级前端工程师 / 技术负责人",
+        "startDate": "2021-03",
+        "endDate": "至今",
+        "highlights": [
+          "主导设计并落地微前端架构，支撑 8 个业务模块独立开发与部署",
+          "推动 Rust 工具链迁移，将 CI/CD 构建时间从 12 分钟优化至 3 分钟",
+          "搭建前端监控体系（Sentry + 自研埋点），线上问题定位效率提升 60%"
+        ]
+      },
+      {
+        "company": "云帆软件",
+        "role": "前端工程师",
+        "startDate": "2018-07",
+        "endDate": "2021-02",
+        "highlights": [
+          "负责核心 B 端产品从 jQuery 到 React 的技术重构，代码量减少 40%",
+          "搭建组件库与设计系统，统一 3 条产品线的 UI 规范",
+          "引入 E2E 测试框架（Playwright），回归测试覆盖率从 0 提升至 75%"
+        ]
+      },
+      {
+        "company": "开源贡献",
+        "role": "贡献者",
+        "startDate": "2019-01",
+        "endDate": "至今",
+        "highlights": [
+          "Ant Design 社区贡献者，提交 20+ PR 被合并",
+          "自研工具库 xx-utils 在 npm 获 2k+ 周下载量"
+        ]
+      }
+    ],
+    "education": [
+      {
+        "school": "XX 大学",
+        "degree": "本科",
+        "major": "计算机科学与技术",
+        "startYear": 2014,
+        "endYear": 2018
+      }
+    ],
+    "skills": [
+      {
+        "name": "语言",
+        "items": [
+          { "name": "TypeScript", "level": 5 },
+          { "name": "JavaScript", "level": 5 },
+          { "name": "Python", "level": 3 },
+          { "name": "Go", "level": 2 }
+        ]
+      },
+      {
+        "name": "前端",
+        "items": [
+          { "name": "React", "level": 5 },
+          { "name": "Next.js", "level": 5 },
+          { "name": "Vue", "level": 3 },
+          { "name": "Tailwind CSS", "level": 5 },
+          { "name": "Framer Motion", "level": 4 }
+        ]
+      },
+      {
+        "name": "后端",
+        "items": [
+          { "name": "Node.js", "level": 5 },
+          { "name": "Express/NestJS", "level": 4 },
+          { "name": "PostgreSQL", "level": 4 },
+          { "name": "Redis", "level": 3 }
+        ]
+      },
+      {
+        "name": "基础设施",
+        "items": [
+          { "name": "Docker", "level": 4 },
+          { "name": "Kubernetes", "level": 3 },
+          { "name": "AWS/腾讯云", "level": 4 },
+          { "name": "CI/CD", "level": 5 }
+        ]
+      },
+      {
+        "name": "工具",
+        "items": [
+          { "name": "Git", "level": 5 },
+          { "name": "Figma", "level": 3 },
+          { "name": "VS Code", "level": 5 },
+          { "name": "Linux", "level": 4 }
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "id": "micro-frontend-platform",
+        "name": "微前端治理平台",
+        "description": "一站式微前端应用管理、监控与性能分析平台",
+        "tags": ["React", "TypeScript", "Qiankun", "WebSocket"],
+        "image": "/images/projects/proj-1.webp",
+        "demoUrl": "https://micro.example.com",
+        "githubUrl": "https://github.com/yourname/micro-frontend-platform"
+      },
+      {
+        "id": "devops-dashboard",
+        "name": "DevOps 可视化仪表盘",
+        "description": "实时 CI/CD 流水线监控与告警面板",
+        "tags": ["Next.js", "D3.js", "WebSocket", "Docker"],
+        "image": "/images/projects/proj-2.webp",
+        "demoUrl": "https://dashboard.example.com",
+        "githubUrl": "https://github.com/yourname/devops-dashboard"
+      },
+      {
+        "id": "open-source-utils",
+        "name": "xx-utils 工具库",
+        "description": "轻量级前端工具函数集合，2k+ 周下载量",
+        "tags": ["TypeScript", "Rollup", "Jest"],
+        "image": "/images/projects/proj-3.webp",
+        "githubUrl": "https://github.com/yourname/xx-utils"
+      },
+      {
+        "id": "ai-chat-app",
+        "name": "AI 对话平台",
+        "description": "基于 LLM 的多轮对话应用，支持流式响应",
+        "tags": ["Next.js", "OpenAI", "Edge Runtime", "PostgreSQL"],
+        "image": "/images/projects/proj-4.webp",
+        "demoUrl": "https://chat.example.com",
+        "githubUrl": "https://github.com/yourname/ai-chat-app"
+      },
+      {
+        "id": "ecommerce-admin",
+        "name": "电商后台管理系统",
+        "description": "全栈电商管理后台，RBAC 权限 + 数据大屏",
+        "tags": ["React", "Node.js", "Ant Design", "MongoDB"],
+        "image": "/images/projects/proj-5.webp",
+        "githubUrl": "https://github.com/yourname/ecommerce-admin"
+      }
+    ],
+    "mbti": {
+      "type": "INTP",
+      "name": "逻辑学家",
+      "nameEn": "The Logician",
+      "description": "安静灵活的思考者，对理论和抽象想法充满热情。喜欢用逻辑分析一切事物的本质，享受独立解决问题的过程。",
+      "dimensions": [
+        { "left": "I", "right": "E", "leftName": "内向", "rightName": "外向", "score": 22 },
+        { "left": "N", "right": "S", "leftName": "直觉", "rightName": "感觉", "score": 18 },
+        { "left": "T", "right": "F", "leftName": "思考", "rightName": "情感", "score": 15 },
+        { "left": "P", "right": "J", "leftName": "感知", "rightName": "判断", "score": 28 }
+      ],
+      "strengths": ["逻辑分析", "创造性思维", "客观公正", "适应力强", "求知欲旺盛"],
+      "weaknesses": ["过度分析", "忽视情感", "难以决策", "容易分心"]
+    },
+    "siteConfig": {
+      "title": "YunYu | 全栈工程师",
+      "description": "YunYu 的个人站点——全栈工程师，专注于 React 生态与 Node.js 后端，热爱开源与技术分享",
+      "url": "https://example.com",
+      "ogImage": "/images/og.png"
+    },
+    "disclaimer": "本站内容仅供学习与交流，不构成任何投资或决策建议。"
+  },
+  "homepage": {
+    "philosophy": "我相信好的工具应该安静地解决问题——代码、产品、体验，皆如此。 真棒",
+    "focus": ["语言", "前端"],
+    "statusBadge": "开放新机会",
+    "featuredProjectIds": ["micro-frontend-platform", "devops-dashboard", "open-source-utils"]
+  }
+}

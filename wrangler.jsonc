@@ -10,5 +10,9 @@
   },
   "observability": {
     "enabled": true
+  },
+  "vars": {
+    "GITHUB_REPO": "YunyuVv/PersonalSite",
+    "GITHUB_BRANCH": "main"
   }
 }

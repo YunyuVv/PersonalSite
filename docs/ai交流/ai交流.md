@@ -8,3 +8,6 @@
 落地这个方案到
 /Users/wangpenglong/projects/nextjs/PersonalSite-home/docs/cloudfalre部署
 这个目录下
+
+
+当前本地环境。如何测试 时否更新到了 github上了呢

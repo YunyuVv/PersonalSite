@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import profile from "@/data/profile";
-import homepage from "@/data/homepage";
 import { SocialLinks } from "@/components/ui/social-links";
 import { ShimmerButton } from "@/components/magic-ui/shimmer-button";
 import { LightRays } from "@/components/reactbits/light-rays";
@@ -53,22 +52,10 @@ export function HomeHeroFull() {
       />
 
       {/* ── 主内容：左右分栏 ── */}
-      <div className="relative z-10 flex-1 flex items-center px-6 sm:px-10 lg:px-16 xl:px-24">
+      <div className="relative z-10 flex-1 flex items-start pt-[15vh] lg:pt-[18vh] px-6 sm:px-10 lg:px-16 xl:px-24">
         <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-center">
           {/* ─ 左侧：文字区 ─ */}
           <div className="max-w-xl">
-            {/* 状态徽章 */}
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={d(0)}
-            >
-              <span className="hm-eyebrow">
-                <span className="hm-dot" />
-                {homepage.statusBadge} · {p.location}
-              </span>
-            </motion.div>
-
             {/* 名字 — SplitText 逐字母入场 */}
             <div className="mt-6">
               <SplitText

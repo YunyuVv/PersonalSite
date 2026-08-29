@@ -96,4 +96,6 @@ export interface Profile {
   projects: Project[];
   mbti: MBTIProfile;
   siteConfig: SiteConfig;
+  /** 全局免责声明（页脚展示） */
+  disclaimer: string;
 }

@@ -1,14 +1,17 @@
 import profile from "@/data/profile";
-import { SocialLinks } from "@/components/ui/social-links";
 
 export function Footer() {
   return (
     <footer className="relative py-10 px-4 border-t border-[var(--divider)]">
-      <div className="mx-auto max-w-6xl flex flex-col md:flex-row items-center justify-between gap-5">
+      <div className="mx-auto max-w-6xl space-y-4">
+        {profile.disclaimer && (
+          <p className="text-xs leading-relaxed text-[var(--text-muted)] border-l-2 border-[var(--divider)] pl-3">
+            {profile.disclaimer}
+          </p>
+        )}
         <p className="text-sm text-[var(--text-muted)]">
-          &copy; {new Date().getFullYear()} {profile.name}. 用 Next.js 构建。
+          &copy; {new Date().getFullYear()} {profile.name}.
         </p>
-        <SocialLinks iconSize={18} />
       </div>
     </footer>
   );
