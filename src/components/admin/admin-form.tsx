@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Profile } from "@/types/profile";
+import ConfirmDialog from "@/components/ui/confirm-dialog";
 
 type HomepageFields = {
   philosophy: string;
@@ -45,12 +46,17 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
   const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("basic");
   const [saving, setSaving] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } |  null>(null);
 
   const setProfile = (patch: Partial<Profile>) =>
     setData((d) => ({ ...d, profile: { ...d.profile, ...patch } }));
   const setHomepage = (patch: Partial<HomepageFields>) =>
     setData((d) => ({ ...d, homepage: { ...d.homepage, ...patch } }));
+
+  const confirmSave = () => {
+    setShowConfirm(true);
+  };
 
   const save = async () => {
     setSaving(true);
@@ -275,7 +281,7 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
         {/* 保存 */}
         <div className="flex items-center gap-4">
           <button
-            onClick={save}
+            onClick={confirmSave}
             disabled={saving}
             className="rounded-md bg-neutral-900 px-5 py-2 text-sm font-medium text-white disabled:opacity-50"
           >
@@ -288,6 +294,19 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={showConfirm}
+        title="确认保存到 GitHub？"
+        description="保存将触发一次 GitHub 提交并自动重建 Cloudflare 部署（Worker 每日有部署额度限制）。"
+        confirmText="确定保存"
+        cancelText="取消"
+        onCancel={() => setShowConfirm(false)}
+        onConfirm={() => {
+          setShowConfirm(false);
+          save();
+        }}
+      />
     </div>
   );
 
