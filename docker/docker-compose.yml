@@ -1,5 +1,8 @@
 services:
   site:
+    # 固定容器名：与 compose 项目名解耦，方便 docker ps / docker logs 直接识别。
+    # 注意：name 固定后不可再 scale 多副本（本项目单容器，无需扩展）。
+    container_name: personal-site-qz
     # 镜像由 GitHub Actions 在 push 到 main-xianyu-qingzheng 分支时自动构建并推送到 GHCR，这里只引用镜像，不再本地 build。
     # 镜像名固定带分支标识 xianyu-qingzheng，并支持 linux/amd64 与 linux/arm64 双架构；
     # 也可用环境变量覆盖：IMAGE_NAME=ghcr.io/YunyuVv/personal-site:xianyu-qingzheng docker compose up -d
