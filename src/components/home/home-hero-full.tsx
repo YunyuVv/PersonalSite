@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowRight, Mail, Sparkles, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState } from "react";
 import profile from "@/data/profile";
 import { SocialLinks } from "@/components/ui/social-links";

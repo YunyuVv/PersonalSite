@@ -68,7 +68,7 @@ function DimensionBars() {
   const reduced = useReducedMotion();
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {mbti.dimensions.map((d, i) => {
         const dominantLeft = d.score <= 50;
         const pct = dominantLeft ? 100 - d.score : d.score;
@@ -102,7 +102,7 @@ function DimensionBars() {
               </span>
             </div>
 
-            <div className="relative h-2.5 overflow-hidden rounded-full bg-[var(--bg-muted)]">
+            <div className="relative h-2 overflow-hidden rounded-full bg-[var(--bg-muted)]">
               <motion.div
                 className="absolute top-0 h-full rounded-full"
                 style={{
@@ -145,25 +145,20 @@ export function MBTICard({ className = "" }: MBTICardProps) {
 
   return (
     <motion.div
-      className={`relative overflow-hidden rounded-3xl border border-[var(--divider)] bg-[var(--bg-card)] p-7 shadow-sm sm:p-10 lg:p-12 ${className}`}
+      className={`relative ${className}`}
       variants={CONTAINER}
       initial={reduced ? undefined : "hidden"}
       whileInView={reduced ? undefined : "show"}
       viewport={{ once: true, margin: "-80px" }}
     >
-      {/* 背景光晕 */}
+      {/* 左上角 accent 光晕 */}
       <div
         className="pointer-events-none absolute -left-24 -top-24 h-80 w-80 rounded-full opacity-15 blur-3xl dark:opacity-25"
         style={{ background: "var(--accent)" }}
         aria-hidden
       />
-      <div
-        className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full opacity-10 blur-3xl"
-        style={{ background: "var(--accent)" }}
-        aria-hidden
-      />
 
-      <div className="relative grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <div className="relative grid gap-10 lg:grid-cols-12 lg:gap-10">
         {/* 左侧：人物插画 */}
         <motion.div
           className="flex items-center justify-center lg:col-span-5"
@@ -184,11 +179,6 @@ export function MBTICard({ className = "" }: MBTICardProps) {
               ease: "easeInOut",
             }}
           >
-            <div
-              className="absolute inset-0 rounded-full opacity-20 blur-3xl dark:opacity-30"
-              style={{ background: "var(--accent)" }}
-              aria-hidden
-            />
             <Image
               src={mbtiImage}
               alt={`${mbti.type} ${mbti.name} 人物插画`}
@@ -208,11 +198,11 @@ export function MBTICard({ className = "" }: MBTICardProps) {
               性格 / MBTI
             </span>
 
-            <div className="mt-5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="font-display text-5xl font-bold tracking-tight text-[var(--text-primary)] sm:text-6xl">
+            <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <span className="font-display text-4xl font-bold tracking-tight text-[var(--text-primary)] sm:text-5xl">
                 {mbti.type}
               </span>
-              <span className="text-xl font-medium text-[var(--text-secondary)]">
+              <span className="text-lg font-medium text-[var(--text-secondary)]">
                 {mbti.name}
               </span>
               <span className="font-mono text-sm text-[var(--text-muted)]">
@@ -220,17 +210,17 @@ export function MBTICard({ className = "" }: MBTICardProps) {
               </span>
             </div>
 
-            <p className="mt-4 max-w-xl leading-relaxed text-[var(--text-secondary)]">
+            <p className="mt-3 max-w-lg text-[15px] leading-relaxed text-[var(--text-secondary)]">
               {mbti.description}
             </p>
           </motion.div>
 
-          {/* 维度分析面板 */}
+          {/* 维度分析 */}
           <motion.div
-            className="mt-8 rounded-2xl border border-[var(--divider)] bg-[var(--bg-primary)]/60 p-5 backdrop-blur-sm sm:p-6"
+            className="mt-7 border-t border-[var(--divider)] pt-5"
             variants={ITEM_FADE}
           >
-            <h3 className="mb-5 text-sm font-semibold text-[var(--text-primary)]">
+            <h3 className="mb-4 text-sm font-semibold text-[var(--text-primary)]">
               维度分析
             </h3>
             <DimensionBars />
@@ -238,7 +228,7 @@ export function MBTICard({ className = "" }: MBTICardProps) {
 
           {/* 标签 */}
           <motion.div
-            className="mt-8 grid gap-6 sm:grid-cols-2"
+            className="mt-7 grid gap-5 sm:grid-cols-2"
             variants={ITEM_FADE}
           >
             <TagList items={mbti.strengths} tone="strength" />

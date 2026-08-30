@@ -2,17 +2,18 @@
 
 import { useMemo, useState } from "react";
 import profile from "@/data/profile";
+import { getSocialLabel } from "@/lib/social-platforms";
 
 /* ---------------- 数据建模：把"我"拆成一张架构拓扑图 ---------------- */
 
-const socials = [
-  { name: "GitHub", url: profile.social.github },
-  { name: "LinkedIn", url: profile.social.linkedin },
-  { name: "掘金", url: profile.social.juejin },
-  { name: "知乎", url: profile.social.zhihu },
-  { name: "微信", url: profile.social.wechat },
-  { name: "网站", url: profile.social.website },
-].filter((s) => s.url && !s.url.includes("yourname") && s.url !== "https://mp.weixin.qq.com/");
+const socials = (profile.social ?? [])
+  .map((s) => ({ name: getSocialLabel(s.platform, s.label), url: s.url }))
+  .filter(
+    (s) =>
+      s.url &&
+      !s.url.includes("yourname") &&
+      s.url !== "https://mp.weixin.qq.com/"
+  );
 
 type Dir = "up" | "right" | "down" | "left";
 

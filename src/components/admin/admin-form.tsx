@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Profile } from "@/types/profile";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { PLATFORM_CATALOG, SOCIAL_CATEGORY_ORDER } from "@/lib/social-platforms";
 
 type HomepageFields = {
   philosophy: string;
@@ -25,15 +26,10 @@ const TABS = [
   { key: "footer", label: "页脚" },
 ] as const;
 
-const SOCIAL_KEYS = [
-  "github",
-  "linkedin",
-  "juejin",
-  "zhihu",
-  "twitter",
-  "wechat",
-  "website",
-] as const;
+const SOCIAL_GROUPS = SOCIAL_CATEGORY_ORDER.map((cat) => ({
+  cat,
+  items: Object.entries(PLATFORM_CATALOG).filter(([, m]) => m.category === cat),
+}));
 
 function toList(s: string): string[] {
   return s
@@ -60,7 +56,7 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
     setShowConfirm(true);
   };
 
-  const save = async () => {
+  const save = async (mode: "github" | "local" = "github") => {
     setSaving(true);
     setMsg(null);
     try {
@@ -68,13 +64,16 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "same-origin",
-        body: JSON.stringify({ profile: data.profile, homepage: data.homepage }),
+        body: JSON.stringify({ profile: data.profile, homepage: data.homepage, mode }),
       });
       const json = await res.json().catch(() => ({}));
       if (res.ok && json.ok) {
         setMsg({
           ok: true,
-          text: "已保存，约 1–3 分钟后 Cloudflare 自动重建生效",
+          text:
+            mode === "local"
+              ? "已写入本地 src/data/site-content.json"
+              : "已保存，约 1–3 分钟后 Cloudflare 自动重建生效",
         });
       } else if (res.status === 401) {
         setMsg({ ok: false, text: "会话已失效，请重新登录" });
@@ -105,6 +104,16 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
 
   const { profile, homepage } = data;
 
+  // 本地环境判定：localhost / 127.0.0.1 / *.local 视为本地调试，显示「仅更改本地文件」按钮
+  const isLocal =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1" ||
+      window.location.hostname.endsWith(".local"));
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)]">
       <header className="border-b border-[var(--divider)] bg-[var(--bg-card)] px-6 py-4">
@@ -112,7 +121,7 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
           <div>
             <h1 className="text-lg font-semibold">站点后台管理</h1>
             <p className="text-sm text-[var(--text-secondary)]">
-              修改后保存到 GitHub，触发 Cloudflare 自动重建（约 1–3 分钟生效）
+              修改后保存到 GitHub（约 1–3 分钟自动重建生效）；本地调试可仅写入本地文件
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -166,17 +175,58 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
           )}
 
           {tab === "social" && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {SOCIAL_KEYS.map((k) => (
-                <Field
-                  key={k}
-                  label={k}
-                  value={profile.social[k] ?? ""}
-                  onChange={(v) =>
-                    setProfile({ social: { ...profile.social, [k]: v } })
-                  }
-                />
+            <div className="flex flex-col gap-4">
+              {profile.social.map((item, i) => (
+                <div key={i} className="rounded-md border border-[var(--divider)] p-3">
+                  <div className="mb-3 flex flex-wrap items-center gap-3">
+                    <select
+                      value={item.platform}
+                      onChange={(e) =>
+                        updateSocial(i, {
+                          platform: e.target.value,
+                          label: e.target.value === "custom" ? item.label ?? "" : undefined,
+                        })
+                      }
+                      className="rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+                    >
+                      {SOCIAL_GROUPS.map((g) => (
+                        <optgroup key={g.cat} label={g.cat}>
+                          {g.items.map(([id, m]) => (
+                            <option key={id} value={id}>
+                              {m.label}
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                    {item.platform === "custom" && (
+                      <input
+                        placeholder="自定义名称"
+                        value={item.label ?? ""}
+                        onChange={(e) => updateSocial(i, { label: e.target.value })}
+                        className="w-40 rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+                      />
+                    )}
+                    <button
+                      onClick={() => removeSocial(i)}
+                      className="ml-auto text-xs text-red-600 hover:underline"
+                    >
+                      删除
+                    </button>
+                  </div>
+                  <Field
+                    label="链接地址"
+                    value={item.url}
+                    onChange={(v) => updateSocial(i, { url: v })}
+                  />
+                </div>
               ))}
+              <button
+                onClick={addSocial}
+                className="self-start rounded-md border border-[var(--divider)] px-3 py-1.5 text-sm hover:bg-[var(--bg-muted)]"
+              >
+                + 添加社交链接
+              </button>
             </div>
           )}
 
@@ -298,6 +348,15 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
           >
             {saving ? "保存中…" : "保存到 GitHub"}
           </button>
+          {mounted && isLocal && (
+            <button
+              onClick={() => save("local")}
+              disabled={saving}
+              className="rounded-md border border-[var(--divider)] px-5 py-2 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-muted)] disabled:opacity-50"
+            >
+              {saving ? "保存中…" : "仅更改本地文件"}
+            </button>
+          )}
           {msg && (
             <span className={`text-sm ${msg.ok ? "text-green-600" : "text-red-600"}`}>
               {msg.text}
@@ -315,7 +374,7 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
         onCancel={() => setShowConfirm(false)}
         onConfirm={() => {
           setShowConfirm(false);
-          save();
+          save("github");
         }}
       />
     </div>
@@ -329,6 +388,19 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
   function updateProject(i: number, patch: Partial<Profile["projects"][number]>) {
     const projects = profile.projects.map((p, idx) => (idx === i ? { ...p, ...patch } : p));
     setProfile({ projects });
+  }
+
+  function updateSocial(i: number, patch: Partial<Profile["social"][number]>) {
+    const social = profile.social.map((s, idx) => (idx === i ? { ...s, ...patch } : s));
+    setProfile({ social });
+  }
+
+  function addSocial() {
+    setProfile({ social: [...profile.social, { platform: "github", url: "" }] });
+  }
+
+  function removeSocial(i: number) {
+    setProfile({ social: profile.social.filter((_, idx) => idx !== i) });
   }
 }
 

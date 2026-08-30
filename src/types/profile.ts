@@ -1,11 +1,10 @@
-export interface SocialLinks {
-  github?: string;
-  linkedin?: string;
-  juejin?: string;
-  zhihu?: string;
-  twitter?: string;
-  wechat?: string;
-  website?: string;
+export interface SocialLinkItem {
+  /** 平台标识，对应 PLATFORM_CATALOG 的 key；"custom" 表示自定义 */
+  platform: string;
+  /** 自定义平台的展示名（platform === "custom" 时必填） */
+  label?: string;
+  /** 链接地址 */
+  url: string;
 }
 
 export interface Experience {
@@ -89,7 +88,7 @@ export interface Profile {
   email: string;
   avatar: string;
   bio: string;
-  social: SocialLinks;
+  social: SocialLinkItem[];
   experiences: Experience[];
   education: Education[];
   skills: SkillCategory[];

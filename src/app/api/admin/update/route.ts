@@ -40,6 +40,21 @@ function deepMerge<T>(base: T, patch: Partial<T>): T {
   return out as T;
 }
 
+/** 将入参合并进解码后的仓库/本地内容（最多覆盖 profile / homepage 两个顶层键） */
+function buildMerged(
+  decoded: { profile?: any; homepage?: any },
+  body: { profile?: unknown; homepage?: unknown }
+) {
+  return {
+    profile: body.profile
+      ? deepMerge(decoded.profile, body.profile as Record<string, unknown>)
+      : decoded.profile,
+    homepage: body.homepage
+      ? deepMerge(decoded.homepage, body.homepage as Record<string, unknown>)
+      : decoded.homepage,
+  };
+}
+
 export async function POST(req: NextRequest) {
   const env = await getAppEnv();
 
@@ -59,6 +74,30 @@ export async function POST(req: NextRequest) {
       { ok: false, error: "nothing to update" },
       { status: 400 }
     );
+  }
+
+  const mode: "github" | "local" = body.mode === "local" ? "local" : "github";
+
+  // —— 本地文件模式：仅本地开发（next dev，项目根目录可写）时可用 ——
+  if (mode === "local") {
+    try {
+      const fs = await import("node:fs/promises");
+      const file = `${process.cwd()}/${REPO_FILE}`;
+      const raw = await fs.readFile(file, "utf-8");
+      const decoded = JSON.parse(raw) as {
+        profile?: Record<string, unknown>;
+        homepage?: Record<string, unknown>;
+      };
+      const merged = buildMerged(decoded, body);
+      await fs.writeFile(file, JSON.stringify(merged, null, 2) + "\n", "utf-8");
+      return NextResponse.json({ ok: true, mode: "local" });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      return NextResponse.json(
+        { ok: false, error: `本地文件写入失败：${msg}` },
+        { status: 500 }
+      );
+    }
   }
 
   const repo = env.GITHUB_REPO;
@@ -92,14 +131,7 @@ export async function POST(req: NextRequest) {
     const decoded = JSON.parse(
       Buffer.from(current.content, "base64").toString("utf-8")
     );
-    const merged = {
-      profile: body.profile
-        ? deepMerge(decoded.profile, body.profile as Record<string, unknown>)
-        : decoded.profile,
-      homepage: body.homepage
-        ? deepMerge(decoded.homepage, body.homepage as Record<string, unknown>)
-        : decoded.homepage,
-    };
+    const merged = buildMerged(decoded, body);
     const content = Buffer.from(
       JSON.stringify(merged, null, 2),
       "utf-8"

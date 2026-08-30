@@ -9,3 +9,6 @@ export function ThemeProvider({
 }: ComponentProps<typeof NextThemesProvider>) {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }
+
+// 直接复用 next-themes 的 useTheme，保持与原消费方（theme-toggle / nav / hero）的导入路径不变
+export { useTheme } from "next-themes";

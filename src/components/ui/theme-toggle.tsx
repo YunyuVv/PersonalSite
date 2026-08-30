@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from "react";
 import { Moon, Sun, Monitor } from "lucide-react";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 
 /**
  * 三态主题切换按钮：浅色 → 深色 → 跟随系统
- * 基于 next-themes，与 shadcn/ui 共用 .dark 类 + theme 存储键
+ * 与 shadcn/ui 共用 .dark 类 + theme 存储键
  */
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const { theme, setTheme } = useTheme();

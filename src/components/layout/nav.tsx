@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Moon, Sun, ArrowUpRight, Home } from "lucide-react";
 import { useScrollSpy } from "@/hooks/use-scroll-spy";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/components/theme-provider";
 
 const HOME_SECTIONS = ["about", "featured", "skills", "links", "contact"];
 const RESUME_SECTIONS = ["about", "skills", "projects", "contact"];

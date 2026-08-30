@@ -54,6 +54,9 @@ export default function RootLayout({
           rel="stylesheet"
         />
 
+        {/* 主题切换由 next-themes 负责：它会自动在 <head> 注入阻塞脚本，
+            在 hydration 之前就设好 .dark/.light class，避免暗黑模式刷新白闪（FOUC）。 */}
+
         {/* JSON-LD 结构化数据 */}
         <script
           type="application/ld+json"
@@ -65,12 +68,9 @@ export default function RootLayout({
               jobTitle: profile.role,
               url: profile.siteConfig.url,
               email: profile.email,
-              sameAs: [
-                profile.social.github,
-                profile.social.linkedin,
-                profile.social.juejin,
-                profile.social.zhihu,
-              ].filter(Boolean),
+              sameAs: profile.social
+                .filter((s) => s.url && !s.url.includes("yourname"))
+                .map((s) => s.url),
             }),
           }}
         />

@@ -373,7 +373,7 @@ export default function CreativePage() {
 
         <div className="mt-12 flex flex-wrap gap-3">
           {SOCIALS.map(({ key, label, color }) => {
-            const url = profile.social[key];
+            const url = profile.social.find((s) => s.platform === key)?.url;
             if (!url) return null;
             return (
               <a
