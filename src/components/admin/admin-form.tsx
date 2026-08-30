@@ -6,6 +6,9 @@ import { useRouter } from "next/navigation";
 import type { Profile } from "@/types/profile";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Avatar } from "@/components/ui/avatar";
+import { Select } from "@/components/ui/select";
+import { SocialIcon } from "@/lib/social-icons";
 import { PLATFORM_CATALOG, SOCIAL_CATEGORY_ORDER } from "@/lib/social-platforms";
 
 type HomepageFields = {
@@ -27,8 +30,10 @@ const TABS = [
 ] as const;
 
 const SOCIAL_GROUPS = SOCIAL_CATEGORY_ORDER.map((cat) => ({
-  cat,
-  items: Object.entries(PLATFORM_CATALOG).filter(([, m]) => m.category === cat),
+  label: cat,
+  options: Object.entries(PLATFORM_CATALOG)
+    .filter(([, m]) => m.category === cat)
+    .map(([value, m]) => ({ value, label: m.label })),
 }));
 
 function toList(s: string): string[] {
@@ -170,7 +175,18 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
               <Field label="标语" value={profile.tagline} onChange={(v) => setProfile({ tagline: v })} />
               <Field label="现居" value={profile.location} onChange={(v) => setProfile({ location: v })} />
               <Field label="邮箱" value={profile.email} onChange={(v) => setProfile({ email: v })} />
-              <Field label="头像路径" value={profile.avatar} onChange={(v) => setProfile({ avatar: v })} />
+              <Field
+                label="头像路径"
+                value={profile.avatar}
+                onChange={(v) => setProfile({ avatar: v })}
+                placeholder="本地路径如 /images/avatar.jpg，或外链 https://..."
+              />
+              <div className="sm:col-span-2 flex items-center gap-3 rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2">
+                <Avatar src={profile.avatar} name={profile.name} size={56} />
+                <div className="text-xs text-[var(--text-secondary)] leading-relaxed">
+                  支持两种格式：① 本地路径（如 <code className="text-[var(--text-primary)]">/images/avatar.jpg</code>，需把图片放到 <code className="text-[var(--text-primary)]">public/</code> 下）；② 外部图片链接（以 <code className="text-[var(--text-primary)]">http://</code> 或 <code className="text-[var(--text-primary)]">https://</code> 开头）。加载失败时自动回退为姓名首字母。
+                </div>
+              </div>
             </div>
           )}
 
@@ -179,26 +195,19 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
               {profile.social.map((item, i) => (
                 <div key={i} className="rounded-md border border-[var(--divider)] p-3">
                   <div className="mb-3 flex flex-wrap items-center gap-3">
-                    <select
+                    <Select
                       value={item.platform}
-                      onChange={(e) =>
+                      onChange={(v) =>
                         updateSocial(i, {
-                          platform: e.target.value,
-                          label: e.target.value === "custom" ? item.label ?? "" : undefined,
+                          platform: v,
+                          label: v === "custom" ? item.label ?? "" : undefined,
                         })
                       }
-                      className="rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
-                    >
-                      {SOCIAL_GROUPS.map((g) => (
-                        <optgroup key={g.cat} label={g.cat}>
-                          {g.items.map(([id, m]) => (
-                            <option key={id} value={id}>
-                              {m.label}
-                            </option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </select>
+                      groups={SOCIAL_GROUPS}
+                      placeholder="选择平台"
+                      maxHeight={280}
+                      renderIcon={(v) => <SocialIcon platform={v} size={16} />}
+                    />
                     {item.platform === "custom" && (
                       <input
                         placeholder="自定义名称"
@@ -408,16 +417,19 @@ function Field({
   label,
   value,
   onChange,
+  placeholder,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
+  placeholder?: string;
 }) {
   return (
     <label className="block">
       <span className="mb-1 block text-sm font-medium text-[var(--text-primary)]">{label}</span>
       <input
         value={value}
+        placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
         className="w-full rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
       />

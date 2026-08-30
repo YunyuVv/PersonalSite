@@ -7,10 +7,11 @@ import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState } from "react";
 import profile from "@/data/profile";
 import { SocialLinks } from "@/components/ui/social-links";
+import { Avatar } from "@/components/ui/avatar";
 import { ShimmerButton } from "@/components/magic-ui/shimmer-button";
 import { LightRays } from "@/components/reactbits/light-rays";
 import { ElectricBorder } from "@/components/reactbits/electric-border";
-import { SplitText } from "@/components/reactbits/split-text";
+import { MaskedHeading } from "@/components/reactbits/masked-heading";
 import { DecryptedText } from "@/components/reactbits/decrypted-text";
 import { ShinyText } from "@/components/reactbits/shiny-text";
 import { ClickSpark } from "@/components/reactbits/click-spark";
@@ -56,14 +57,29 @@ export function HomeHeroFull() {
         <div className="w-full max-w-7xl mx-auto grid lg:grid-cols-[1fr_1fr] gap-8 lg:gap-12 items-center">
           {/* ─ 左侧：文字区 ─ */}
           <div className="max-w-xl">
-            {/* 名字 — SplitText 逐字母入场 */}
+            {/* 名字 — MaskedHeading 官网同款视频/图片填充 + Rise 揭示 */}
             <div className="mt-6">
-              <SplitText
+              <MaskedHeading
                 text={p.name}
                 tag="h1"
-                className="text-[clamp(3.5rem,8vw,7rem)] leading-[0.9] font-bold tracking-tight text-[var(--text-primary)]"
-                delay={0.05}
-                duration={0.5}
+                mediaType="image"
+                src="/images/MaskedHeading.avif"
+                fillScale={1.25}
+                parallax={26}
+                drift={18}
+                brightness={1}
+                saturation={1}
+                grayscale={false}
+                reveal="rise"
+                trigger="view"
+                align="left"
+                weight={700}
+                tracking={-0.03}
+                lineHeight={1.06}
+                textScale={0.115}
+                duration={1.1}
+                stagger={0.09}
+                className="leading-[1.06]"
               />
             </div>
 
@@ -133,8 +149,14 @@ export function HomeHeroFull() {
             </motion.div>
           </div>
 
-          {/* ─ 右侧：留白给光柱 ─ */}
-          <div className="hidden lg:block" />
+          {/* ─ 右侧：头像（光柱背景之上） ─ */}
+          {profile.avatar && (
+            <div className="hidden lg:flex items-center justify-center">
+              <div className="relative">
+                <Avatar size={240} className="shadow-xl" priority />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
