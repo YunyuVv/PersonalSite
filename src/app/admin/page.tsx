@@ -30,6 +30,7 @@ export default async function AdminPage() {
       focus: homepage.focus,
       statusBadge: homepage.statusBadge,
       featuredProjectIds: homepage.featuredProjectIds,
+      modules: homepage.modules,
     },
   };
   return <AdminForm initialData={initialData} />;

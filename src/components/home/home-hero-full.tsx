@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState } from "react";
 import profile from "@/data/profile";
+import { homepage } from "@/data/homepage";
 import { SocialLinks } from "@/components/ui/social-links";
 import { Avatar } from "@/components/ui/avatar";
 import { ShimmerButton } from "@/components/magic-ui/shimmer-button";
@@ -63,7 +64,7 @@ export function HomeHeroFull() {
                 text={p.name}
                 tag="h1"
                 mediaType="image"
-                src="/images/MaskedHeading.avif"
+                src={profile.maskedHeadingSrc || "/images/MaskedHeading.avif"}
                 fillScale={1.25}
                 parallax={26}
                 drift={18}
@@ -130,7 +131,8 @@ export function HomeHeroFull() {
               </a>
             </motion.div>
 
-            {/* 社交链接 */}
+            {/* 社交链接（受 social 模块开关控制） */}
+            {homepage.modules?.social !== false && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -147,6 +149,7 @@ export function HomeHeroFull() {
                 <SocialLinks iconSize={18} />
               </ElectricBorder>
             </motion.div>
+            )}
           </div>
 
           {/* ─ 右侧：头像（光柱背景之上） ─ */}

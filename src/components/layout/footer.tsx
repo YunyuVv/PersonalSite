@@ -1,6 +1,10 @@
 import profile from "@/data/profile";
+import { homepage } from "@/data/homepage";
 
 export function Footer() {
+  // 模块开关：footer 关闭时不渲染页脚
+  if (homepage.modules?.footer === false) return null;
+
   return (
     <footer className="relative py-10 px-4 border-t border-[var(--divider)]">
       <div className="mx-auto max-w-6xl space-y-4">

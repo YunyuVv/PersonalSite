@@ -6,6 +6,7 @@
     "location": "深圳",
     "email": "biliww997@gmail.com",
     "avatar": "",
+    "maskedHeadingSrc": "/images/MaskedHeading.avif",
     "bio": "我是一名在 Web 开发领域深耕五年的全栈工程师，专注于 React 生态与 Node.js 后端。\n\n我相信好的代码和好的设计一样，应该让人感到舒适。曾在创业公司从零搭建过日活百万级产品的技术架构，也热爱在开源社区贡献和分享。\n\n技术之外，是个国风爱好者，喜欢书法和水墨画——这也是这个页面的灵感来源。",
     "social": [
       {
@@ -323,7 +324,7 @@
       "url": "https://example.com",
       "ogImage": "/images/og.png"
     },
-    "disclaimer": "本站内容仅供学习与交流，不构成任何投资或决策建议。"
+    "disclaimer": ""
   },
   "homepage": {
     "philosophy": "我相信好的工具应该安静地解决问题——代码、产品、体验，皆如此。 真棒",
@@ -336,6 +337,14 @@
       "micro-frontend-platform",
       "devops-dashboard",
       "open-source-utils"
-    ]
+    ],
+    "modules": {
+      "hero": true,
+      "social": true,
+      "mbti": true,
+      "projects": true,
+      "about": true,
+      "footer": true
+    }
   }
 }

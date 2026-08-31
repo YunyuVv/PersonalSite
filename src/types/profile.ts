@@ -87,6 +87,8 @@ export interface Profile {
   location: string;
   email: string;
   avatar: string;
+  /** 首页标题（MaskedHeading）遮罩填充图：本地路径 /images/xxx 或外部 http(s) 链接；为空时回退默认图 */
+  maskedHeadingSrc: string;
   bio: string;
   social: SocialLinkItem[];
   experiences: Experience[];

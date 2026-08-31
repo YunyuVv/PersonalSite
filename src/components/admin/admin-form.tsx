@@ -6,8 +6,9 @@ import { useRouter } from "next/navigation";
 import type { Profile } from "@/types/profile";
 import ConfirmDialog from "@/components/ui/confirm-dialog";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Avatar } from "@/components/ui/avatar";
 import { Select } from "@/components/ui/select";
+import { Toggle } from "@/components/ui/toggle";
+import { FieldInfo } from "@/components/ui/field-info";
 import { SocialIcon } from "@/lib/social-icons";
 import { PLATFORM_CATALOG, SOCIAL_CATEGORY_ORDER } from "@/lib/social-platforms";
 
@@ -16,6 +17,7 @@ type HomepageFields = {
   focus: string[];
   statusBadge: string;
   featuredProjectIds: string[];
+  modules: Record<string, boolean>;
 };
 
 type InitialData = { profile: Profile; homepage: HomepageFields };
@@ -28,6 +30,16 @@ const TABS = [
   { key: "about", label: "关于 / 理念" },
   { key: "footer", label: "页脚" },
 ] as const;
+
+/** 后台 tab → 前端内容模块 key 的映射（basic 对应 hero 主视觉区） */
+const TAB_MODULE: Record<(typeof TABS)[number]["key"], string> = {
+  basic: "hero",
+  social: "social",
+  mbti: "mbti",
+  projects: "projects",
+  about: "about",
+  footer: "footer",
+};
 
 const SOCIAL_GROUPS = SOCIAL_CATEGORY_ORDER.map((cat) => ({
   label: cat,
@@ -168,6 +180,19 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
 
         {/* 表单区 */}
         <div className="rounded-lg border border-[var(--divider)] bg-[var(--bg-card)] p-5">
+          {/* 模块级「是否开启」开关：关闭后前端对应内容模块不展示 */}
+          <div className="mb-5 flex items-center justify-between rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2.5">
+            <div className="leading-tight">
+              <span className="text-sm font-medium text-[var(--text-primary)]">启用本模块</span>
+              <p className="text-xs text-[var(--text-secondary)]">关闭后，前端对应内容模块将不再展示</p>
+            </div>
+            <Toggle
+              checked={homepage.modules[TAB_MODULE[tab]] !== false}
+              onChange={(v) =>
+                setHomepage({ modules: { ...homepage.modules, [TAB_MODULE[tab]]: v } })
+              }
+            />
+          </div>
           {tab === "basic" && (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <Field label="姓名" value={profile.name} onChange={(v) => setProfile({ name: v })} />
@@ -180,13 +205,23 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
                 value={profile.avatar}
                 onChange={(v) => setProfile({ avatar: v })}
                 placeholder="本地路径如 /images/avatar.jpg，或外链 https://..."
+                hint={
+                  <>
+                    支持两种格式：① 本地路径（如 <HintCode>/images/avatar.jpg</HintCode>，需把图片放到 <HintCode>public/</HintCode> 下）；② 外部图片链接（以 <HintCode>http://</HintCode> 或 <HintCode>https://</HintCode> 开头）。加载失败时自动回退为姓名首字母。
+                  </>
+                }
               />
-              <div className="sm:col-span-2 flex items-center gap-3 rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2">
-                <Avatar src={profile.avatar} name={profile.name} size={56} />
-                <div className="text-xs text-[var(--text-secondary)] leading-relaxed">
-                  支持两种格式：① 本地路径（如 <code className="text-[var(--text-primary)]">/images/avatar.jpg</code>，需把图片放到 <code className="text-[var(--text-primary)]">public/</code> 下）；② 外部图片链接（以 <code className="text-[var(--text-primary)]">http://</code> 或 <code className="text-[var(--text-primary)]">https://</code> 开头）。加载失败时自动回退为姓名首字母。
-                </div>
-              </div>
+              <Field
+                label="首页标题遮罩图"
+                value={profile.maskedHeadingSrc}
+                onChange={(v) => setProfile({ maskedHeadingSrc: v })}
+                placeholder="本地路径如 /images/MaskedHeading.avif，或外链 https://..."
+                hint={
+                  <>
+                    首页 <HintCode>YunYu</HintCode> 标题的遮罩填充图。留空或删除将回退默认 <HintCode>/images/MaskedHeading.avif</HintCode>。支持：① 本地路径（图片放到 <HintCode>public/</HintCode> 下）；② 外部图片链接（以 <HintCode>http(s)://</HintCode> 开头）。
+                  </>
+                }
+              />
             </div>
           )}
 
@@ -418,15 +453,20 @@ function Field({
   value,
   onChange,
   placeholder,
+  hint,
 }: {
   label: string;
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  hint?: React.ReactNode;
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-sm font-medium text-[var(--text-primary)]">{label}</span>
+      <span className="mb-1 flex items-center text-sm font-medium text-[var(--text-primary)]">
+        {label}
+        {hint && <FieldInfo>{hint}</FieldInfo>}
+      </span>
       <input
         value={value}
         placeholder={placeholder}
@@ -434,6 +474,15 @@ function Field({
         className="w-full rounded-md border border-[var(--divider)] bg-[var(--bg-primary)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
       />
     </label>
+  );
+}
+
+/** 提示文案里的内联代码样式 */
+function HintCode({ children }: { children: React.ReactNode }) {
+  return (
+    <code className="rounded bg-[var(--bg-muted)] px-1 text-[var(--text-primary)]">
+      {children}
+    </code>
   );
 }
 

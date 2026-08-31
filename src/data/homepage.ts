@@ -9,6 +9,7 @@ const content = raw as unknown as {
     focus: string[];
     statusBadge: string;
     featuredProjectIds: string[];
+    modules: Record<string, boolean>;
   };
 };
 
@@ -17,5 +18,8 @@ export const homepage = {
   monogram: profile.name.charAt(0),
   ...content.homepage,
 };
+
+/** 各内容模块的启用开关；缺省视为开启 */
+export const moduleEnabled = (key: string): boolean => homepage.modules?.[key] !== false;
 
 export default homepage;

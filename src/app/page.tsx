@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import profile from "@/data/profile";
+import { homepage } from "@/data/homepage";
 import { Footer } from "@/components/layout/footer";
 import { BackToTop } from "@/components/ui/back-to-top";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -16,6 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default function HomePage() {
+  // 各内容模块开关；缺省（undefined）视为开启
+  const m = homepage.modules ?? {};
+
   return (
     <>
       {/* 首页极简顶栏：仅保留主题切换（原导航栏与首页图标已移除） */}
@@ -26,11 +30,11 @@ export default function HomePage() {
       </header>
 
       <main className="flex-1">
-        <HomeHeroFull />
-        <HomeFeatured />
-        <MBTISection variant="hero" />
-        <HomeAbout />
-        <HomeContact />
+        {m.hero !== false && <HomeHeroFull />}
+        {m.projects !== false && <HomeFeatured />}
+        {m.mbti !== false && <MBTISection variant="hero" />}
+        {m.about !== false && <HomeAbout />}
+        {m.social !== false && <HomeContact />}
       </main>
       <Footer />
       <BackToTop />
