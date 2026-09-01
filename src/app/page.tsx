@@ -23,6 +23,11 @@ export function generateMetadata(): Metadata {
 }
 
 export default function HomePage() {
+  // 每次渲染重新读取，保证后台改配置后即时生效
+  const config = getSiteConfig();
+  // 各内容模块开关；缺省（undefined）视为开启，因此空对象 = 全部展示
+  const m = config.modules ?? {};
+
   return (
     <>
       {/* 首页极简顶栏：仅保留主题切换（原导航栏与首页图标已移除） */}
@@ -33,11 +38,11 @@ export default function HomePage() {
       </header>
 
       <main className="flex-1">
-        <HomeHeroFull />
-        <HomeFeatured />
-        <MBTISection variant="hero" />
-        <HomeAbout />
-        <HomeContact />
+        {m.hero !== false && <HomeHeroFull />}
+        {m.featured !== false && <HomeFeatured />}
+        {m.mbti !== false && <MBTISection variant="hero" />}
+        {m.about !== false && <HomeAbout />}
+        {m.social !== false && <HomeContact />}
       </main>
       <Footer />
       <BackToTop />

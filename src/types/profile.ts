@@ -1,26 +1,15 @@
-export interface SocialLinks {
-  github?: string;
-  linkedin?: string;
-  juejin?: string;
-  zhihu?: string;
-  twitter?: string;
-  wechat?: string;
-  website?: string;
-  xiaohongshu?: string;
-  weibo?: string;
-  /** 哔哩哔哩（B 站）主页 */
-  bilibili?: string;
-  /** 抖音主页 */
-  douyin?: string;
-  /** YouTube 频道 */
-  youtube?: string;
-  /** 微信视频号（无 web 外链时留空，仅作展示标识） */
-  shipinhao?: string;
+export interface SocialLinkItem {
+  /** 平台标识，对应 PLATFORM_CATALOG 的 key；"custom" 表示自定义 */
+  platform: string;
+  /** 自定义平台的展示名（platform === "custom" 时必填） */
+  label?: string;
+  /** 链接地址 */
+  url: string;
 }
 
 /** 平台矩阵：用于展示各内容平台入口与数据背书 */
 export interface Channel {
-  /** 平台标识，匹配 SocialLinks / BRAND 的 key（如 "bilibili"） */
+  /** 平台标识，匹配 PLATFORM_CATALOG 的 key（如 "bilibili"） */
   platform: string;
   /** 平台中文名，如「哔哩哔哩」 */
   name: string;
@@ -144,7 +133,7 @@ export interface Profile {
   email: string;
   avatar: string;
   bio: string;
-  social: SocialLinks;
+  social: SocialLinkItem[];
   experiences: Experience[];
   education: Education[];
   skills: SkillCategory[];

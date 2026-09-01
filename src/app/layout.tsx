@@ -72,7 +72,7 @@ export default function RootLayout({
               jobTitle: config.role,
               url: config.siteConfig.url,
               email: config.email,
-              sameAs: Object.values(config.social).filter(Boolean),
+              sameAs: config.social.map((s) => s.url).filter(Boolean),
             }),
           }}
         />

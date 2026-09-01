@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useSiteConfig } from "@/lib/site-config-context";
+import { getSocialLabel } from "@/lib/social-platforms";
 
 /* ---------------- 布局（径向：中心 + 四向模块 + 分支） ---------------- */
 
@@ -62,14 +63,13 @@ function buildGraph(config: ReturnType<typeof useSiteConfig>): {
   nodes: GraphNode[];
   edges: [string, string][];
 } {
-  const socials = [
-    { name: "微信", url: config.social.wechat },
-    { name: "小红书", url: config.social.xiaohongshu },
-    { name: "微博", url: config.social.weibo },
-  ].filter(
-    (s) =>
-      s.url && !s.url.includes("yourname") && s.url !== "https://mp.weixin.qq.com/"
-  );
+  // 从配置数组读取，平台名取平台目录中的展示名（支持所有已登记平台）
+  const socials = (config.social ?? [])
+    .filter(
+      (s) =>
+        s.url && !s.url.includes("yourname") && s.url !== "https://mp.weixin.qq.com/"
+    )
+    .map((s) => ({ name: getSocialLabel(s.platform, s.label), url: s.url }));
 
   const GROUPS: {
     id: string;

@@ -3,8 +3,12 @@
 import { useEffect, useState } from "react";
 import type { SiteConfig } from "@/lib/config";
 import { useToast } from "@/components/ui/toast";
+import { Select } from "@/components/ui/select";
+import { Toggle } from "@/components/ui/toggle";
+import { SocialIcon } from "@/lib/social-icons";
+import { PLATFORM_CATALOG, SOCIAL_CATEGORY_ORDER } from "@/lib/social-platforms";
 
-type SocialLinks = SiteConfig["social"];
+type SocialLinkItem = SiteConfig["social"][number];
 type ContentItem = SiteConfig["contents"][number];
 type MBTIDimension = SiteConfig["mbti"]["dimensions"][number];
 
@@ -18,17 +22,13 @@ const PLATFORMS: { value: string; label: string }[] = [
   { value: "shipinhao", label: "视频号" },
 ];
 
-const SOCIAL_FIELDS: { key: keyof SocialLinks; label: string }[] = [
-  { key: "bilibili", label: "B站 主页" },
-  { key: "douyin", label: "抖音 主页" },
-  { key: "youtube", label: "YouTube 主页" },
-  { key: "xiaohongshu", label: "小红书 主页" },
-  { key: "wechat", label: "公众号 主页" },
-  { key: "weibo", label: "微博 主页" },
-  { key: "shipinhao", label: "视频号 主页" },
-  { key: "github", label: "GitHub 主页" },
-  { key: "website", label: "个人网站" },
-];
+// 社交平台下拉分组：国内 / 国外 / 其他
+const SOCIAL_GROUPS = SOCIAL_CATEGORY_ORDER.map((cat) => ({
+  label: cat,
+  options: Object.entries(PLATFORM_CATALOG)
+    .filter(([, meta]) => meta.category === cat)
+    .map(([value, meta]) => ({ value, label: meta.label })),
+}));
 
 const toTags = (s: string) => s.split(/[，,]/).map((t) => t.trim()).filter(Boolean);
 
@@ -41,6 +41,19 @@ const TABS = [
   { key: "disclaimer", label: "免责声明" },
   { key: "mbti", label: "性格MBTI" },
 ] as const;
+
+/**
+ * 后台 tab → 前端内容模块 key 的映射。
+ * 未列出的 tab（如 seo）没有对应的前端内容模块，不显示启用开关。
+ */
+const TAB_MODULE: Record<string, string> = {
+  basic: "hero",
+  social: "social",
+  about: "about",
+  featured: "featured",
+  disclaimer: "disclaimer",
+  mbti: "mbti",
+};
 
 const TOKEN_KEY = "admin_token";
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 登录状态保留 7 天
@@ -96,6 +109,8 @@ export default function AdminPage() {
   const [token, setToken] = useState("");
   const [config, setConfig] = useState<SiteConfig | null>(null);
   const [tab, setTab] = useState<string>("basic");
+  // 当前 tab 对应的前端模块 key；无对应模块的 tab（如 seo）为 undefined
+  const activeModule = TAB_MODULE[tab];
 
   useEffect(() => {
     const saved = readStoredToken();
@@ -128,8 +143,19 @@ export default function AdminPage() {
   function setTop<K extends keyof SiteConfig>(key: K, value: SiteConfig[K]) {
     setConfig((c) => (c ? { ...c, [key]: value } : c));
   }
-  function setSocial(key: keyof SocialLinks, value: string) {
-    setConfig((c) => (c ? { ...c, social: { ...c.social, [key]: value } } : c));
+  function setModules(patch: Record<string, boolean>) {
+    setConfig((c) => (c ? { ...c, modules: { ...c.modules, ...patch } } : c));
+  }
+  function updateSocial(i: number, patch: Partial<SocialLinkItem>) {
+    setConfig((c) =>
+      c ? { ...c, social: c.social.map((s, idx) => (idx === i ? { ...s, ...patch } : s)) } : c
+    );
+  }
+  function addSocial() {
+    setConfig((c) => (c ? { ...c, social: [...c.social, { platform: "bilibili", url: "" }] } : c));
+  }
+  function removeSocial(i: number) {
+    setConfig((c) => (c ? { ...c, social: c.social.filter((_, idx) => idx !== i) } : c));
   }
   function setSite(key: keyof SiteConfig["siteConfig"], value: string) {
     setConfig((c) => (c ? { ...c, siteConfig: { ...c.siteConfig, [key]: value } } : c));
@@ -275,6 +301,22 @@ export default function AdminPage() {
         </div>
 
         <div className="space-y-6">
+          {/* 模块级「是否开启」开关：关闭后前端对应内容模块不展示 */}
+          {activeModule && (
+            <div className="flex items-center justify-between rounded-lg border border-[var(--divider)] bg-[var(--bg-card)] px-4 py-3">
+              <div className="leading-tight">
+                <span className="text-sm font-medium text-[var(--text-primary)]">启用本模块</span>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  关闭后，前端对应内容模块将不再展示
+                </p>
+              </div>
+              <Toggle
+                checked={config.modules?.[activeModule] !== false}
+                onChange={(v) => setModules({ [activeModule]: v })}
+              />
+            </div>
+          )}
+
           {tab === "basic" && (
             <Section title="基础信息">
               <Field label="姓名" value={config.name} onChange={(v) => setTop("name", v)} />
@@ -288,15 +330,52 @@ export default function AdminPage() {
 
           {tab === "social" && (
             <Section title="社交 / 平台主页链接">
-              {SOCIAL_FIELDS.map((f) => (
-                <Field
-                  key={f.key}
-                  label={f.label}
-                  value={config.social[f.key] ?? ""}
-                  onChange={(v) => setSocial(f.key, v)}
-                  hint="填对应平台的主页地址"
-                />
-              ))}
+              <div className="flex flex-col gap-4">
+                {config.social.map((item, i) => (
+                  <div key={i} className="rounded-md border border-[var(--divider)] p-3">
+                    <div className="mb-3 flex flex-wrap items-center gap-3">
+                      <Select
+                        value={item.platform}
+                        onChange={(v) =>
+                          updateSocial(i, {
+                            platform: v,
+                            label: v === "custom" ? item.label ?? "" : undefined,
+                          })
+                        }
+                        groups={SOCIAL_GROUPS}
+                        placeholder="选择平台"
+                        maxHeight={280}
+                        renderIcon={(v) => <SocialIcon platform={v} size={16} />}
+                      />
+                      {item.platform === "custom" && (
+                        <input
+                          placeholder="自定义名称"
+                          value={item.label ?? ""}
+                          onChange={(e) => updateSocial(i, { label: e.target.value })}
+                          className="w-40 rounded-md border border-[var(--divider)] bg-[var(--bg-card)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none focus:border-[var(--accent)]"
+                        />
+                      )}
+                      <button
+                        onClick={() => removeSocial(i)}
+                        className="ml-auto text-xs text-red-600 hover:underline"
+                      >
+                        删除
+                      </button>
+                    </div>
+                    <Field
+                      label="链接地址"
+                      value={item.url}
+                      onChange={(v) => updateSocial(i, { url: v })}
+                    />
+                  </div>
+                ))}
+                <button
+                  onClick={addSocial}
+                  className="self-start rounded-md border border-[var(--divider)] px-3 py-1.5 text-sm text-[var(--text-secondary)] hover:bg-[var(--divider)]"
+                >
+                  + 添加社交链接
+                </button>
+              </div>
             </Section>
           )}
 
@@ -378,41 +457,42 @@ export default function AdminPage() {
 
           {tab === "mbti" && (
             <Section title="性格 / MBTI">
-              <div className="grid grid-cols-2 gap-3">
-                <Field label="类型（4 字母）" value={config.mbti.type} onChange={(v) => setMbti({ type: v })} hint="如 INTP" />
-                <Field label="中文名" value={config.mbti.name} onChange={(v) => setMbti({ name: v })} />
-              </div>
-              <Field label="英文名" value={config.mbti.nameEn} onChange={(v) => setMbti({ nameEn: v })} />
-              <TextArea label="描述" value={config.mbti.description} onChange={(v) => setMbti({ description: v })} />
-              <p className="text-xs text-[var(--text-muted)] mt-2">四个维度（倾向分 0–100，越高越偏向左侧字母）</p>
-              <div className="space-y-3">
-                {config.mbti.dimensions.map((d, i) => (
-                  <div key={i} className="rounded-md border border-[var(--divider)] p-3 grid grid-cols-2 gap-3">
-                    <Field label="左字母" value={d.left} onChange={(v) => updateDimension(i, { left: v })} />
-                    <Field label="右字母" value={d.right} onChange={(v) => updateDimension(i, { right: v })} />
-                    <Field label="左名称" value={d.leftName} onChange={(v) => updateDimension(i, { leftName: v })} />
-                    <Field label="右名称" value={d.rightName} onChange={(v) => updateDimension(i, { rightName: v })} />
-                    <Field
-                      label="倾向分（0–100）"
-                      value={String(d.score)}
-                      onChange={(v) => updateDimension(i, { score: Number(v) || 0 })}
-                      hint="数值越高越偏左"
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="grid grid-cols-2 gap-3 mt-3">
-                <Field
-                  label="核心优势"
+              <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <Field label="类型" value={config.mbti.type} onChange={(v) => setMbti({ type: v })} />
+                  <Field label="中文名" value={config.mbti.name} onChange={(v) => setMbti({ name: v })} />
+                  <Field label="英文名" value={config.mbti.nameEn} onChange={(v) => setMbti({ nameEn: v })} />
+                </div>
+                <TextArea
+                  label="一句话描述"
+                  value={config.mbti.description}
+                  onChange={(v) => setMbti({ description: v })}
+                />
+                <div className="flex flex-col gap-2">
+                  <span className="text-sm font-medium">四个维度</span>
+                  {config.mbti.dimensions.map((d, i) => (
+                    <div key={i} className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+                      <Field label="左" value={d.left} onChange={(v) => updateDimension(i, { left: v })} />
+                      <Field label="右" value={d.right} onChange={(v) => updateDimension(i, { right: v })} />
+                      <Field label="左名" value={d.leftName} onChange={(v) => updateDimension(i, { leftName: v })} />
+                      <Field label="右名" value={d.rightName} onChange={(v) => updateDimension(i, { rightName: v })} />
+                      <Field
+                        label="倾向%"
+                        value={String(d.score)}
+                        onChange={(v) => updateDimension(i, { score: Number(v) || 0 })}
+                      />
+                    </div>
+                  ))}
+                </div>
+                <TextArea
+                  label="核心优势（逗号分隔）"
                   value={config.mbti.strengths.join("，")}
                   onChange={(v) => setMbti({ strengths: toTags(v) })}
-                  hint="逗号分隔"
                 />
-                <Field
-                  label="潜在盲区"
+                <TextArea
+                  label="潜在盲区（逗号分隔）"
                   value={config.mbti.weaknesses.join("，")}
                   onChange={(v) => setMbti({ weaknesses: toTags(v) })}
-                  hint="逗号分隔"
                 />
               </div>
             </Section>

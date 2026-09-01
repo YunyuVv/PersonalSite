@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import type {
-  SocialLinks,
+  SocialLinkItem,
   Experience,
   Education,
   SkillCategory,
@@ -30,7 +30,7 @@ export interface SiteConfig {
   email: string;
   avatar: string;
   bio: string;
-  social: SocialLinks;
+  social: SocialLinkItem[];
   experiences: Experience[];
   education: Education[];
   skills: SkillCategory[];
@@ -49,6 +49,11 @@ export interface SiteConfig {
   contents: ContentItem[];
   credentials: Credential[];
   disclaimer: string;
+  /**
+   * 内容模块开关：key 为模块名（hero / social / featured / mbti / about / footer / disclaimer），
+   * 值为是否启用。缺省（undefined）视为启用，因此留空对象 = 全部展示。
+   */
+  modules: Record<string, boolean>;
 }
 
 // 默认种子：首次启动若无 config.json，写入此默认值（与 data/config.json 一致）
@@ -60,15 +65,14 @@ const DEFAULT_CONFIG: SiteConfig = {
   email: "hello@example.com",
   avatar: "/images/avatar.jpg",
   bio: "我是一名专注资产配置与市场解读的金融内容创作者。\n\n我相信好的投资不需要复杂的术语，而是把数据讲清楚、把逻辑理顺畅。无论是基金、股票还是宏观趋势，都希望用普通人能听懂的方式，帮你做出更理性的决策。\n\n内容之外，也在持续学习行为金融与量化方法，让每一期视频和文章都有据可依。",
-  social: {
-    wechat: "https://mp.weixin.qq.com/",
-    xiaohongshu: "https://www.xiaohongshu.com/user/profile/yourname",
-    weibo: "https://weibo.com/yourname",
-    bilibili: "https://space.bilibili.com/youruid",
-    douyin: "https://v.douyin.com/yourid/",
-    youtube: "https://www.youtube.com/@yourchannel",
-    shipinhao: "",
-  },
+  social: [
+    { platform: "wechat", url: "https://mp.weixin.qq.com/" },
+    { platform: "xiaohongshu", url: "https://www.xiaohongshu.com/user/profile/yourname" },
+    { platform: "weibo", url: "https://weibo.com/yourname" },
+    { platform: "bilibili", url: "https://space.bilibili.com/youruid" },
+    { platform: "douyin", url: "https://v.douyin.com/yourid/" },
+    { platform: "youtube", url: "https://www.youtube.com/@yourchannel" },
+  ],
   experiences: [
     {
       company: "独立财经内容创作",
@@ -236,6 +240,8 @@ const DEFAULT_CONFIG: SiteConfig = {
   ],
   disclaimer:
     "免责声明：本站所有内容仅代表个人观点，用于知识分享与学习交流，不构成任何投资建议或收益承诺。市场有风险，投资需谨慎，请基于自身风险承受能力独立决策。",
+  // 内容模块开关：留空对象表示全部启用
+  modules: {},
 };
 
 const CONFIG_PATH = path.join(process.cwd(), "data", "config.json");

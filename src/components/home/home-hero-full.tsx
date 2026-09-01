@@ -105,23 +105,25 @@ export function HomeHeroFull() {
               </ShimmerButton>
             </motion.div>
 
-            {/* 社交链接 */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-              className="mt-8 inline-block"
-            >
-              <ElectricBorder
-                color={isDark ? "#5b8def" : "#3b5ccc"}
-                speed={0.8}
-                chaos={0.08}
-                borderRadius={999}
-                className="px-2 py-1"
+            {/* 社交链接（受「社交平台」模块开关控制，关闭后整块不展示） */}
+            {p.modules?.social !== false && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+                className="mt-8 inline-block"
               >
-                <SocialLinks iconSize={18} />
-              </ElectricBorder>
-            </motion.div>
+                <ElectricBorder
+                  color={isDark ? "#5b8def" : "#3b5ccc"}
+                  speed={0.8}
+                  chaos={0.08}
+                  borderRadius={999}
+                  className="px-2 py-1"
+                >
+                  <SocialLinks iconSize={18} />
+                </ElectricBorder>
+              </motion.div>
+            )}
           </div>
 
           {/* ─ 右侧：留白给光柱 ─ */}
