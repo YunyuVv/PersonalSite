@@ -99,4 +99,6 @@ export interface Profile {
   siteConfig: SiteConfig;
   /** 全局免责声明（页脚展示） */
   disclaimer: string;
+  /** 页脚版权文案：留空则自动生成 "© {year} {name}."；支持 {year} 占位符，如 "© {year} YunYu. 保留所有权利" */
+  footerCopyright: string;
 }

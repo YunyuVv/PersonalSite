@@ -379,7 +379,20 @@ export default function AdminForm({ initialData }: { initialData: InitialData })
           )}
 
           {tab === "footer" && (
-            <TextArea label="页脚免责声明" value={profile.disclaimer} onChange={(v) => setProfile({ disclaimer: v })} rows={3} />
+            <>
+              <Field
+                label="页脚版权文案"
+                value={profile.footerCopyright}
+                onChange={(v) => setProfile({ footerCopyright: v })}
+                placeholder="留空自动生成 © 2026 YunYu.；可写 {year} 自动更新年份"
+                hint={
+                  <HintCode>
+                    页脚底部展示的版权行。留空时自动生成 <code>© {"{year}"} {profile.name}.</code>（年份随当前年自动更新）；也可自定义，使用 <code>{"{year}"}</code> 占位符让年份自动变化，例如 <code>© {"{year}"} YunYu. 保留所有权利</code>。
+                  </HintCode>
+                }
+              />
+              <TextArea label="页脚免责声明" value={profile.disclaimer} onChange={(v) => setProfile({ disclaimer: v })} rows={3} />
+            </>
           )}
         </div>
 

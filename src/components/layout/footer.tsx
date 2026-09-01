@@ -14,7 +14,9 @@ export function Footer() {
           </p>
         )}
         <p className="text-sm text-[var(--text-muted)]">
-          &copy; {new Date().getFullYear()} {profile.name}.
+          {profile.footerCopyright?.trim()
+            ? profile.footerCopyright.replace(/\{year\}/g, String(new Date().getFullYear()))
+            : `© ${new Date().getFullYear()} ${profile.name}.`}
         </p>
       </div>
     </footer>
