@@ -11,3 +11,13 @@
 
 
 当前本地环境。如何测试 时否更新到了 github上了呢
+
+
+
+当前项目项引入
+https://threeui.com/
+https://github.com/MengTo/threeui
+这个项目中的一些组件, 在一个新的页面中,使用这个项目的一些组件,做一个页面
+看看适合使用哪些组件,如何设计, 分析一下, 形成一个文档 落地到
+/Users/wangpenglong/projects/nextjs/PersonalSite-home/docs/前端ui/threeui
+这个目录下

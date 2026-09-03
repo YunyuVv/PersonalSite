@@ -11,6 +11,9 @@ importers:
 
   .:
     dependencies:
+      '@designcodeio/threeui':
+        specifier: ^1.2.0
+        version: 1.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.185.1)
       '@radix-ui/react-navigation-menu':
         specifier: ^1.2.22
         version: 1.2.22(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -451,6 +454,13 @@ packages:
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
+
+  '@designcodeio/threeui@1.2.0':
+    resolution: {integrity: sha512-E6F/+IPfLKYatB5W62H3gK1bp9WYvfO6xuWBaBh8oLVR7fbTeeEwgLqqy7ZPMA0zmDpAy03nKYOIswBXsstL2g==}
+    peerDependencies:
+      react: '>=18 <20'
+      react-dom: '>=18 <20'
+      three: '>=0.149 <1'
 
   '@dimforge/rapier3d-compat@0.12.0':
     resolution: {integrity: sha512-uekIGetywIgopfD97oDL5PfeezkFpNhwlzlaEYNOA0N6ghdsOvh/HYjSMek5Q2O1PYvRSDFcqFVJl4r4ZBwOow==}
@@ -3644,6 +3654,12 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  three@0.128.0:
+    resolution: {integrity: sha512-i0ap/E+OaSfzw7bD1TtYnPo3VEplkl70WX5fZqZnfZsE3k3aSFudqrrC9ldFZfYFkn1zwDmBcdGfiIm/hnbyZA==}
+
+  three@0.165.0:
+    resolution: {integrity: sha512-cc96IlVYGydeceu0e5xq70H8/yoVT/tXBxV/W8A/U6uOq7DXc4/s1Mkmnu6SqoYGhSRWWYFOhVwvq6V0VtbplA==}
+
   three@0.185.1:
     resolution: {integrity: sha512-5aojFCXKwnjBRZvUnt3WFfEcvUJgkN5LlijRFN95hMy8WVkG4I0QNcJE+OuWvuJ0bOdStrbfXn0pkd6/QyiAlg==}
 
@@ -4567,6 +4583,14 @@ snapshots:
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
+
+  '@designcodeio/threeui@1.2.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.185.1)':
+    dependencies:
+      react: 19.2.4
+      react-dom: 19.2.4(react@19.2.4)
+      three: 0.185.1
+      three128: three@0.128.0
+      three165: three@0.165.0
 
   '@dimforge/rapier3d-compat@0.12.0': {}
 
@@ -7775,6 +7799,10 @@ snapshots:
       acorn: 8.17.0
       commander: 2.20.3
       source-map-support: 0.5.21
+
+  three@0.128.0: {}
+
+  three@0.165.0: {}
 
   three@0.185.1: {}
 
